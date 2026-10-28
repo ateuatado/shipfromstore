@@ -68,6 +68,10 @@ Permissões do piloto:
 
 O gerente não altera decisões operacionais das unidades nesta primeira versão.
 
+### Entregador
+
+É vinculado a uma única unidade e visualiza somente as coletas atribuídas pelo gestor da unidade. O entregador registra o recebimento por assinatura na tela e acompanha o prazo e a rota até a entrega.
+
 ## Exemplos sintéticos
 
 | Nome | Matrícula | Função | Vínculo |
@@ -98,7 +102,7 @@ Os exemplos acima são dados de demonstração. A senha de teste não deve ser p
 - Usuários com múltiplos perfis.
 - Administração de empregados por interface pública.
 - Delegação temporária de permissões.
-- Login do entregador.
+- Aplicação PWA e cadeia de custódia do entregador são detalhadas na feature `004-pwa-entregador-e-cadeia-de-custodia`.
 
 ## Decisões pendentes
 
