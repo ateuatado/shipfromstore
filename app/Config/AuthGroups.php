@@ -73,6 +73,10 @@ class AuthGroups extends ShieldAuthGroups
             'title'       => 'Gerente',
             'description' => 'Acompanha o território sintético completo.',
         ],
+        'entregador' => [
+            'title'       => 'Entregador',
+            'description' => 'Executa coletas atribuídas pela unidade vinculada.',
+        ],
     ];
 
     /**
@@ -95,6 +99,9 @@ class AuthGroups extends ShieldAuthGroups
         'orders.operate.unit'  => 'Can accept and dispatch orders for the linked unit',
         'orders.view.area'     => 'Can view orders for the linked area',
         'orders.view.territory'=> 'Can view orders for the synthetic territory',
+        'deliveries.view.assigned' => 'Can view assigned deliveries',
+        'deliveries.confirm.collection' => 'Can confirm collection with signature',
+        'deliveries.confirm.delivery' => 'Can confirm delivery',
     ];
 
     /**
@@ -138,6 +145,11 @@ class AuthGroups extends ShieldAuthGroups
         ],
         'gerente' => [
             'orders.view.territory',
+        ],
+        'entregador' => [
+            'deliveries.view.assigned',
+            'deliveries.confirm.collection',
+            'deliveries.confirm.delivery',
         ],
     ];
 }

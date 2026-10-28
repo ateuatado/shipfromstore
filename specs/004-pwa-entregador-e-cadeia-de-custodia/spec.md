@@ -16,6 +16,8 @@ Disponibilizar ao entregador uma aplicação web responsiva e instalável como P
 - O entregador visualiza somente as coletas atribuídas a ele.
 - O gestor não pode atribuir uma coleta a entregador de outra unidade.
 
+O piloto terá 50 entregadores fictícios, cinco para cada uma das dez unidades. Os identificadores de login serão `entregador_0001` até `entregador_0050`.
+
 ## História de usuário 1 — Visualizar coletas atribuídas (P1)
 
 Como entregador, quero abrir o aplicativo no celular e visualizar minhas coletas para saber quais atendimentos devo realizar.
@@ -69,6 +71,10 @@ atribuída → em deslocamento para coleta → coleta confirmada → em entrega 
 ```
 
 Casos de não coleta, recusa ou ocorrência serão definidos em uma funcionalidade posterior.
+
+## Registro de atribuição
+
+Cada atribuição deve registrar contrato, unidade, entregador, gestor responsável, data/hora da atribuição, confirmação da coleta, confirmação da entrega e a assinatura digital ou seu hash de integridade.
 
 ## Dados exibidos ao entregador
 

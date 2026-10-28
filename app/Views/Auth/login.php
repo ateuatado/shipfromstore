@@ -21,7 +21,7 @@
             <form action="<?= url_to('login') ?>" method="post">
                 <?= csrf_field() ?>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingUsernameInput" name="username" inputmode="numeric" autocomplete="username" placeholder="Matrícula" value="<?= old('username') ?>" required>
+                    <input type="text" class="form-control" id="floatingUsernameInput" name="username" inputmode="text" autocomplete="username" placeholder="Matrícula" value="<?= old('username') ?>" required>
                     <label for="floatingUsernameInput">Matrícula</label>
                 </div>
                 <div class="form-floating mb-3">

@@ -28,6 +28,28 @@ final class PilotUsersSeeder extends Seeder
             ['name' => 'Gerente Território', 'matricula' => '1001', 'role' => 'gerente', 'unit_id' => null, 'area_id' => null],
         ];
 
+        $unitAreas = [
+            'CenEntEnc_01' => 'area-norte',
+            'CenEntEnc_02' => 'area-norte',
+            'CenEntEnc_03' => 'area-norte',
+            'CenEntEnc_04' => 'area-sul',
+            'CenEntEnc_05' => 'area-sul',
+            'CenEntEnc_06' => 'area-sul',
+            'CenEntEnc_07' => 'area-sul',
+            'CenEntEnc_08' => 'area-sul',
+            'CenEntEnc_09' => 'area-norte',
+            'CenEntEnc_10' => 'area-norte',
+        ];
+        $courierNumber = 1;
+        foreach ($unitAreas as $unitId => $areaId) {
+            for ($slot = 0; $slot < 5; $slot++) {
+                $code = str_pad((string) $courierNumber, 4, '0', STR_PAD_LEFT);
+                $login = 'entregador_' . $code;
+                $users[] = ['name' => 'Entregador ' . $code, 'matricula' => $login, 'role' => 'entregador', 'unit_id' => $unitId, 'area_id' => $areaId];
+                $courierNumber++;
+            }
+        }
+
         $userModel = model(UserModel::class);
         $employeeTable = $this->db->table('employees');
 
