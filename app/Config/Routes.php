@@ -7,5 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('dashboard', 'Home::dashboard', ['filter' => 'auth']);
+$routes->get('map', 'Map::index');
+$routes->post('api/maps/route', 'Map::route');
 
 service('auth')->routes($routes);

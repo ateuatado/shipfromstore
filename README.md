@@ -9,6 +9,7 @@ Projeto local em CodeIgniter 4 com autenticação CodeIgniter Shield, Bootstrap 
 - CodeIgniter Shield 1.4.1
 - Composer 2.9.8
 - Bootstrap 5.3.8 + Popper 2.11.8 em `public/assets/`
+- Leaflet 1.9.4 em `public/assets/leaflet/`
 - MariaDB 10.4.32 via driver `MySQLi`
 - Banco local `shipfromstore`, com migrações do Shield executadas
 - URL: `https://shipfromstore.test`
@@ -30,6 +31,12 @@ O MariaDB foi escolhido porque já estava ativo, aceita a convenção local exis
 - `/dashboard`: painel protegido pelo filtro `auth`
 
 O remetente de e-mail do Shield permanece vazio de propósito; defina um endereço real no `.env` antes de habilitar confirmação de e-mail ou recuperação por e-mail.
+
+## Mapa e rotas
+
+`/map` apresenta a zona simulada Moema–Jaguaré com as unidades fictícias `CenEntEnc_01` a `CenEntEnc_10`, uma coleta e uma entrega de exemplo. O endpoint `POST /api/maps/route` aceita uma lista de pontos no formato OSRM e retorna distância, duração, provedor e avaliação preliminar do SLA de 120 minutos.
+
+O protótipo usa Leaflet, OpenStreetMap e um endpoint OSRM compatível configurado por `maps.osrmBaseUrl`. Se o serviço de rotas não responder, o sistema usa uma estimativa local de distância geográfica com fator de desvio e velocidade média conservadora. Esse fallback é apenas para desenvolvimento; para produção, deve ser substituído por um serviço de rotas próprio ou homologado.
 
 ## TLS/Apache
 

@@ -8,7 +8,8 @@
         <?php if (auth()->loggedIn()): ?>
             <a class="btn btn-primary btn-lg" href="<?= site_url('dashboard') ?>">Abrir painel</a>
         <?php else: ?>
-            <a class="btn btn-primary btn-lg" href="<?= site_url('register') ?>">Criar conta</a>
+            <a class="btn btn-primary btn-lg me-2" href="<?= site_url('register') ?>">Criar conta</a>
+            <a class="btn btn-outline-primary btn-lg" href="<?= site_url('map') ?>">Ver mapa</a>
         <?php endif ?>
     </div>
 </div>

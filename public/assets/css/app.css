@@ -1,3 +1,4 @@
 :root { --bs-primary: #2457d6; }
 body { min-height: 100vh; }
 .navbar-brand { letter-spacing: .02em; }
+.map-panel { min-height: 620px; background: #e9ecef; }
