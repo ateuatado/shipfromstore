@@ -20,8 +20,8 @@
 ## Fase 3 — Consolidação necessária
 
 - [ ] T010 [US2] Criar testes automatizados para coordenadas válidas, inválidas, limite e fallback.
-- [ ] T011 [US2] Extrair tempos operacionais de coleta e entrega para configuração explícita.
-- [ ] T012 [US2] Definir e aplicar margem de segurança do SLA.
+- [ ] T011 [US2] Extrair para configuração os tempos de 600 segundos de coleta e 300 segundos de entrega.
+- [ ] T012 [US2] Aplicar margem de segurança configurada de 900 segundos ao resultado do SLA.
 - [ ] T013 [US3] Padronizar mensagens de erro e contrato HTTP.
 - [ ] T014 [US1] Garantir atribuição e política adequada dos tiles no ambiente escolhido.
 

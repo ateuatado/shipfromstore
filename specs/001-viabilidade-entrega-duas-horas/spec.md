@@ -15,7 +15,9 @@ O MVP não usa nomes, códigos ou estrutura real de organizações. As unidades 
 - O SLA de entrega é de 120 minutos a partir de `collected_at`.
 - A viabilidade deve considerar o percurso `unidade → coleta → entrega`.
 - A unidade precisa alcançar o ponto de coleta antes de iniciar a coleta.
-- O tempo estimado deve contemplar deslocamentos e, quando definidos, tempos operacionais de coleta e entrega.
+- O cálculo deve reservar 10 minutos para a coleta, 5 minutos para a entrega e 15 minutos de margem de segurança.
+- A fórmula do MVP é: `tempo de deslocamento + 10 minutos de coleta + 5 minutos de entrega + 15 minutos de margem <= 120 minutos`.
+- O tempo de deslocamento deve contemplar o percurso completo `unidade → coleta → entrega`.
 - O resultado deve indicar viável ou não viável e explicar a estimativa usada.
 - Se o serviço de rotas não responder, o sistema pode usar uma estimativa de contingência identificada explicitamente como fallback.
 - Coordenadas inválidas, sequência incompleta ou pontos fora da área permitida devem gerar erro de validação, sem tentativa silenciosa de cálculo.
@@ -80,7 +82,5 @@ Como operador, quero receber uma indicação clara quando uma unidade não conse
 
 ## Questões para a próxima revisão
 
-- Qual tempo fixo deve ser reservado para a coleta e para a entrega?
-- Qual margem de segurança deve ser aplicada ao limite de duas horas?
 - A disponibilidade das unidades será informada manualmente, por agenda ou por evento?
 - O sistema deve escolher somente a melhor unidade ou retornar uma lista ordenada?

@@ -26,7 +26,8 @@ Formalizar e evoluir o protótipo de mapa e estimativa de rota já existente par
 - [x] O território e as unidades são sintéticos.
 - [x] O provedor de rotas é isolado em serviço configurável.
 - [x] A interface usa assets separados.
-- [ ] Tempos operacionais e margem de segurança ainda precisam de decisão.
+- [x] Tempos operacionais definidos: 10 minutos para coleta e 5 minutos para entrega.
+- [x] Margem de segurança definida: 15 minutos.
 
 ## Componentes
 
@@ -67,5 +68,6 @@ Saída de sucesso:
 
 - O endpoint público de roteamento serve apenas ao protótipo e pode ter limites de uso.
 - A estimativa de fallback não substitui uma matriz de tempos confiável.
-- O SLA ainda precisa definir tempos operacionais e margem de segurança.
+- O SLA do MVP considera 30 minutos fixos: 15 minutos operacionais e 15 minutos de margem.
+- A duração do deslocamento ainda depende do provedor de rotas ou do fallback configurado.
 - A seleção de unidades disponíveis será especificada em uma feature posterior.

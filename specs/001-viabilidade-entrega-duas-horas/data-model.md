@@ -23,6 +23,10 @@
 - `feasible`.
 - `slaSeconds`: 7200 no MVP.
 - `withinSla`.
+- `pickupServiceSeconds`: 600 no MVP.
+- `deliveryServiceSeconds`: 300 no MVP.
+- `safetyMarginSeconds`: 900 no MVP.
+- `totalPlannedSeconds`: deslocamento mais tempos operacionais e margem.
 - `createdAt` para futura auditoria.
 
 ## Evolução prevista

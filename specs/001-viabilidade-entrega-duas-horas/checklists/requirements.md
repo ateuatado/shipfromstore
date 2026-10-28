@@ -8,6 +8,6 @@
 - [x] O escopo sintético e a restrição de privacidade estão registrados.
 - [x] Há critérios de aceite para visualização, cálculo e impossibilidade.
 - [x] Há casos de borda identificados.
-- [ ] Tempos operacionais de coleta e entrega foram decididos.
-- [ ] Margem de segurança foi decidida.
+- [x] Tempos operacionais de coleta e entrega foram decididos: 10 e 5 minutos.
+- [x] Margem de segurança foi decidida: 15 minutos.
 - [ ] Disponibilidade e aceite das unidades foram especificados.
