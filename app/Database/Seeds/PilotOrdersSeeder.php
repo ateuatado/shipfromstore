@@ -16,6 +16,10 @@ final class PilotOrdersSeeder extends Seeder
         $employees = $db->table('employees')->get()->getResultArray();
         $managers = [];
         $couriers = [];
+        $mapUnits = [];
+        foreach (config('Map')->units as $mapUnit) {
+            $mapUnits[$mapUnit['id']] = $mapUnit;
+        }
 
         foreach ($employees as $employee) {
             if ($employee['role'] === 'gestor_unidade') {
@@ -30,6 +34,7 @@ final class PilotOrdersSeeder extends Seeder
         foreach ($couriers as $unitId => $unitCouriers) {
             usort($unitCouriers, static fn (array $left, array $right): int => strcmp($left['matricula'], $right['matricula']));
             $areaId = $unitCouriers[0]['area_id'];
+            $unitPosition = $mapUnits[$unitId];
 
             $pendingContract = 'CT-2026-P' . str_pad((string) $sequence, 3, '0', STR_PAD_LEFT);
             $this->insertOrder($orders, [
@@ -39,6 +44,10 @@ final class PilotOrdersSeeder extends Seeder
                 'area_id' => $areaId,
                 'pickup_address' => 'Rua Demonstrativa, ' . (100 + $sequence) . ' — Área Sintética',
                 'delivery_address' => 'Avenida de Destino, ' . (200 + $sequence) . ' — Área Sintética',
+                'pickup_lat' => $unitPosition['lat'] + 0.005,
+                'pickup_lng' => $unitPosition['lng'] + 0.005,
+                'delivery_lat' => $unitPosition['lat'] - 0.008,
+                'delivery_lng' => $unitPosition['lng'] - 0.008,
                 'status' => 'pending_acceptance',
                 'received_at' => '2026-10-28 12:00:00',
             ]);
@@ -57,6 +66,10 @@ final class PilotOrdersSeeder extends Seeder
                     'area_id' => $areaId,
                     'pickup_address' => 'Rua de Coleta, ' . (300 + $sequence) . ' — Área Sintética',
                     'delivery_address' => 'Avenida de Entrega, ' . (400 + $sequence) . ' — Área Sintética',
+                    'pickup_lat' => $unitPosition['lat'] + 0.004,
+                    'pickup_lng' => $unitPosition['lng'] + 0.004,
+                    'delivery_lat' => $unitPosition['lat'] - 0.007,
+                    'delivery_lng' => $unitPosition['lng'] - 0.007,
                     'status' => $status,
                     'received_at' => '2026-10-28 11:00:00',
                     'accepted_at' => $acceptedAt,
@@ -85,6 +98,8 @@ final class PilotOrdersSeeder extends Seeder
     {
         if ($orders->where('contract', $data['contract'])->countAllResults() === 0) {
             $orders->insert($data);
+        } else {
+            $orders->where('contract', $data['contract'])->update($data);
         }
     }
 }

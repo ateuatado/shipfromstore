@@ -9,6 +9,8 @@ $routes->get('/', 'Home::index');
 $routes->get('dashboard', 'Home::dashboard', ['filter' => 'auth']);
 $routes->get('dashboard/pickups', 'Home::pickups', ['filter' => 'auth']);
 $routes->get('dashboard/deliveries', 'Home::deliveries', ['filter' => 'auth']);
+$routes->post('courier/collection/confirm', 'Courier::confirmCollection', ['filter' => 'auth']);
+$routes->post('courier/delivery/confirm', 'Courier::confirmDelivery', ['filter' => 'auth']);
 $routes->get('map', 'Map::index');
 $routes->post('api/maps/route', 'Map::route');
 $routes->get('login', 'Auth\\LoginController::loginView', ['as' => 'login']);
