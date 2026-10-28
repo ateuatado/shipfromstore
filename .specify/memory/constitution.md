@@ -1,50 +1,43 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Constituição do ShipFromStore
 
-## Core Principles
+**Versão:** 1.0.0  
+**Status:** Proposta inicial  
+**Data:** 2026-10-28
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## Princípios fundamentais
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### I. Prazo de duas horas é a regra de negócio central
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+Toda decisão de viabilidade deve considerar a entrega concluída em até 120 minutos após a coleta física. O tempo deve incluir deslocamento da unidade até a coleta, coleta, deslocamento até a entrega e entrega.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Privacidade por desenho
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+O recorte inicial usa somente dados sintéticos da região entre Moema e Jaguaré e unidades fictícias `CenEntEnc_01` a `CenEntEnc_10`. Não devem ser publicados nomes, códigos, endereços ou estrutura operacional real.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### III. Separação clara de responsabilidades
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+Regras de negócio, integração de mapas, persistência, autenticação e apresentação devem permanecer separadas. Credenciais e configurações sensíveis nunca entram no código ou no repositório.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### IV. Testabilidade e rastreabilidade
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Cada funcionalidade deve possuir especificação, critérios de aceite, tarefas e testes verificáveis. Decisões relevantes devem ser registradas nos artefatos da funcionalidade.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### V. Evolução incremental
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+O sistema deve começar com um MVP demonstrável e ampliar suas integrações somente após validar as regras de negócio, o cálculo de prazo e os fluxos de aceite.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+## Restrições técnicas
+
+- PHP 8.2+, CodeIgniter 4, CodeIgniter Shield e MariaDB/MySQL no ambiente atual.
+- Bootstrap e assets locais em `public/assets`.
+- Aplicação acessível por HTTPS em `https://shipfromstore.test`.
+- Leaflet para visualização cartográfica.
+- O provedor de roteamento deve ser configurável; o endpoint público usado no protótipo não é compromisso de produção.
+
+## Fluxo de desenvolvimento
+
+Toda funcionalidade relevante deve seguir: especificação → esclarecimento → plano → tarefas → implementação → validação. Implementações existentes devem ser reconciliadas com a especificação, não simplesmente ignoradas.
+
+## Governança
+
+Esta constituição orienta as especificações e prevalece sobre decisões locais conflitantes. Alterações devem registrar motivo, impacto e versão. Uma especificação só pode ser considerada pronta quando seus critérios de aceite forem claros e testáveis.
