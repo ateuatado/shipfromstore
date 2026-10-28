@@ -61,6 +61,18 @@ class AuthGroups extends ShieldAuthGroups
             'title'       => 'Beta User',
             'description' => 'Has access to beta-level features.',
         ],
+        'gestor_unidade' => [
+            'title'       => 'Gestor de Unidade',
+            'description' => 'Opera pedidos da unidade fictícia vinculada.',
+        ],
+        'gestor_area' => [
+            'title'       => 'Gestor de Área',
+            'description' => 'Acompanha pedidos das unidades da área vinculada.',
+        ],
+        'gerente' => [
+            'title'       => 'Gerente',
+            'description' => 'Acompanha o território sintético completo.',
+        ],
     ];
 
     /**
@@ -79,6 +91,10 @@ class AuthGroups extends ShieldAuthGroups
         'users.edit'          => 'Can edit existing non-admin users',
         'users.delete'        => 'Can delete existing non-admin users',
         'beta.access'         => 'Can access beta-level features',
+        'orders.view.unit'     => 'Can view orders for the linked unit',
+        'orders.operate.unit'  => 'Can accept and dispatch orders for the linked unit',
+        'orders.view.area'     => 'Can view orders for the linked area',
+        'orders.view.territory'=> 'Can view orders for the synthetic territory',
     ];
 
     /**
@@ -112,6 +128,16 @@ class AuthGroups extends ShieldAuthGroups
         'user' => [],
         'beta' => [
             'beta.access',
+        ],
+        'gestor_unidade' => [
+            'orders.view.unit',
+            'orders.operate.unit',
+        ],
+        'gestor_area' => [
+            'orders.view.area',
+        ],
+        'gerente' => [
+            'orders.view.territory',
         ],
     ];
 }
