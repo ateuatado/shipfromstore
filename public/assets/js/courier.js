@@ -48,6 +48,39 @@
         }
 
         if (status === 'collected' || status === 'in_transit') {
+            let trackingWatchId = null;
+            let lastSentAt = 0;
+            let lastPosition = null;
+            const trackingStatus = card.querySelector('.js-tracking-status');
+            const distanceMeters = (first, second) => {
+                const radians = (value) => value * Math.PI / 180;
+                const earthRadius = 6371000;
+                const dLat = radians(second.latitude - first.latitude);
+                const dLng = radians(second.longitude - first.longitude);
+                const a = Math.sin(dLat / 2) ** 2 + Math.cos(radians(first.latitude)) * Math.cos(radians(second.latitude)) * Math.sin(dLng / 2) ** 2;
+                return 2 * earthRadius * Math.asin(Math.min(1, Math.sqrt(a)));
+            };
+            const sendTrackingPoint = async (position) => {
+                const current = {latitude: position.coords.latitude, longitude: position.coords.longitude};
+                const now = Date.now();
+                if (lastPosition && now - lastSentAt < 15000 && distanceMeters(lastPosition, current) < 50) return;
+                try {
+                    const response = await fetch(config.trackingUrl, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, body: JSON.stringify({contract, latitude: current.latitude, longitude: current.longitude, accuracy: position.coords.accuracy})});
+                    if (!response.ok) throw new Error('Não foi possível registrar a posição.');
+                    lastPosition = current;
+                    lastSentAt = now;
+                    if (trackingStatus) trackingStatus.textContent = 'Rastreamento ativo. Último ponto registrado agora.';
+                } catch (exception) {
+                    if (trackingStatus) trackingStatus.textContent = 'Rastreamento aguardando conexão.';
+                }
+            };
+            const trackingError = (error) => {
+                if (trackingStatus) trackingStatus.textContent = error.code === 1 ? 'Permissão de localização não concedida.' : 'Não foi possível obter a localização agora.';
+            };
+            if ('geolocation' in navigator) {
+                trackingWatchId = navigator.geolocation.watchPosition(sendTrackingPoint, trackingError, {enableHighAccuracy: true, maximumAge: 10000, timeout: 15000});
+            } else if (trackingStatus) trackingStatus.textContent = 'Este dispositivo não oferece localização.';
+
             const countdown = card.querySelector('.js-countdown');
             const collectedAt = Date.parse(`${card.dataset.collectedAt.replace(' ', 'T')}Z`);
             const tick = () => {
@@ -64,6 +97,7 @@
             card.querySelector('.js-route').href = route;
             card.querySelector('.js-confirm-delivery').addEventListener('click', async () => {
                 if (!window.confirm('Confirmar que a entrega foi concluída?')) return;
+                if (trackingWatchId !== null) navigator.geolocation.clearWatch(trackingWatchId);
                 const response = await fetch(config.deliveryUrl, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, body: JSON.stringify({contract})});
                 if (response.ok) window.location.reload();
             });

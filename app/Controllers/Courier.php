@@ -76,6 +76,47 @@ final class Courier extends BaseController
         return $this->response->setJSON(['ok' => true, 'deliveredAt' => $now]);
     }
 
+    public function recordTrackingPoint(): ResponseInterface
+    {
+        $payload = $this->request->getJSON(true) ?? [];
+        $contract = (string) ($payload['contract'] ?? '');
+        $latitude = filter_var($payload['latitude'] ?? null, FILTER_VALIDATE_FLOAT);
+        $longitude = filter_var($payload['longitude'] ?? null, FILTER_VALIDATE_FLOAT);
+        $accuracy = filter_var($payload['accuracy'] ?? null, FILTER_VALIDATE_FLOAT);
+        $assignment = $this->assignment($contract);
+
+        if ($assignment === null || ! in_array($assignment['status'], ['collected', 'in_transit'], true)) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Rastreamento não está disponível para este atendimento.']);
+        }
+
+        if ($latitude === false || $longitude === false || $latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180) {
+            return $this->response->setStatusCode(422)->setJSON(['error' => 'Coordenadas de localização inválidas.']);
+        }
+
+        if ($accuracy !== false && ($accuracy < 0 || $accuracy > 10000)) {
+            $accuracy = null;
+        }
+
+        $db = db_connect();
+        $sequence = (int) $db->table('delivery_tracking_points')
+            ->where('assignment_id', $assignment['assignment_id'])
+            ->countAllResults() + 1;
+        $now = Time::now('UTC')->toDateTimeString();
+        $db->table('delivery_tracking_points')->insert([
+            'assignment_id' => $assignment['assignment_id'],
+            'courier_user_id' => auth()->user()->id,
+            'unit_id' => $assignment['unit_id'],
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'accuracy_meters' => $accuracy,
+            'sequence' => $sequence,
+            'recorded_at' => $now,
+            'created_at' => $now,
+        ]);
+
+        return $this->response->setJSON(['ok' => true, 'recordedAt' => $now, 'sequence' => $sequence]);
+    }
+
     private function assignment(string $contract): ?array
     {
         $user = auth()->user();

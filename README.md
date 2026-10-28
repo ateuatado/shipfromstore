@@ -50,6 +50,8 @@ O seeder limpa somente `orders` e `delivery_assignments`, preserva usuários, un
 
 O protótipo usa Leaflet, OpenStreetMap e um endpoint OSRM compatível configurado por `maps.osrmBaseUrl`. Se o serviço de rotas não responder, o sistema usa uma estimativa local de distância geográfica com fator de desvio e velocidade média conservadora. Esse fallback é apenas para desenvolvimento; para produção, deve ser substituído por um serviço de rotas próprio ou homologado.
 
+O rastreamento do percurso do entregador é iniciado após a confirmação da coleta e registra pontos GPS na tabela `delivery_tracking_points` até a confirmação da entrega. O navegador envia um ponto a cada 15 segundos ou após 50 metros, respeitando a permissão de localização do dispositivo.
+
 ## TLS/Apache
 
 O certificado foi criado com a CA mkcert já existente:
