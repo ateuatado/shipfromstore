@@ -80,6 +80,10 @@ Como operador, quero receber uma indicação clara quando uma unidade não conse
 - Persistência definitiva da ordem e auditoria operacional.
 - Uso de dados ou nomes de unidades reais.
 
+## Evolução prevista
+
+O modelo deverá permitir que várias encomendas compartilhem o mesmo ponto de coleta e sejam agrupadas em uma rota futura. O agrupamento não elimina a avaliação individual do prazo nem os eventos de custódia de cada contrato.
+
 ## Questões para a próxima revisão
 
 - A disponibilidade das unidades será informada manualmente, por agenda ou por evento?

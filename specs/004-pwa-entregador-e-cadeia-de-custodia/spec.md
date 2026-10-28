@@ -18,6 +18,14 @@ Disponibilizar ao entregador uma aplicação web responsiva e instalável como P
 
 O piloto terá 50 entregadores fictícios, cinco para cada uma das dez unidades. Os identificadores de login serão `entregador_0001` até `entregador_0050`.
 
+## Agrupamento futuro de encomendas
+
+Um mesmo ponto de coleta poderá entregar várias encomendas destinadas à mesma região. Nesse cenário, o deslocamento até o ponto de coleta será compartilhado e o tempo adicional será concentrado na operação de recebimento e nas entregas individuais.
+
+O piloto simplifica a interface para acompanhar uma encomenda ativa por vez, mas o modelo deve permitir a evolução para uma rota agrupada. Futuramente, uma rota poderá conter vários contratos, com sequência de entrega, tempo operacional por encomenda e eventos de custódia independentes.
+
+Quando várias encomendas forem coletadas juntas, cada uma deverá conservar seu próprio `collected_at`, assinatura, status e `delivered_at`, mesmo que os eventos ocorram no mesmo local e momento.
+
 ## História de usuário 1 — Visualizar coletas atribuídas (P1)
 
 Como entregador, quero abrir o aplicativo no celular e visualizar minhas coletas para saber quais atendimentos devo realizar.
