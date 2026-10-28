@@ -6,9 +6,9 @@
 
 ## Contexto
 
-O ShipFromStore recebe uma solicitação contendo um ponto de coleta e um ponto de entrega. O sistema deve avaliar se uma unidade disponível consegue realizar o percurso completo dentro do território sintético entre Moema e Jaguaré, concluindo a entrega em até duas horas após a coleta.
+O ShipFromStore recebe uma solicitação contendo um ponto de coleta e um ponto de entrega. O sistema deve avaliar se uma unidade disponível consegue realizar o percurso completo dentro de um raio sintético de 15 km a partir da Rua Mergenthaler, 595, concluindo a entrega em até duas horas após a coleta.
 
-O MVP não usa nomes, códigos ou estrutura real de organizações. As unidades são fictícias: `CenEntEnc_01` até `CenEntEnc_10`.
+O MVP não usa nomes, códigos ou estrutura real de organizações. As unidades são fictícias: `CenEntEnc_01` até `CenEntEnc_10`, distribuídas em pontos determinísticos dentro do raio para permitir repetibilidade nos testes.
 
 ## Regras de negócio
 

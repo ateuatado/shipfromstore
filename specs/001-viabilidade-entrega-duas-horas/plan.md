@@ -19,6 +19,7 @@ Formalizar e evoluir o protótipo de mapa e estimativa de rota já existente par
 - **Fallback:** distância haversine com fator rodoviário e velocidade média explícitos
 - **Teste:** PHPUnit/CodeIgniter e validação HTTP local
 - **Plataforma:** Apache HTTPS em `shipfromstore.test`
+- **Área geográfica:** raio de 15 km centrado na Rua Mergenthaler, 595, com dez pontos sintéticos.
 
 ## Verificação da constituição
 

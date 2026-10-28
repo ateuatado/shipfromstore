@@ -34,7 +34,9 @@ O remetente de e-mail do Shield permanece vazio de propósito; defina um endere�
 
 ## Mapa e rotas
 
-`/map` apresenta a zona simulada Moema–Jaguaré com as unidades fictícias `CenEntEnc_01` a `CenEntEnc_10`, uma coleta e uma entrega de exemplo. O endpoint `POST /api/maps/route` aceita uma lista de pontos no formato OSRM e retorna distância, duração, provedor e avaliação preliminar do SLA de 120 minutos.
+`/map` apresenta um raio sintético de 15 km centrado na Rua Mergenthaler, 595, com as unidades fictícias `CenEntEnc_01` a `CenEntEnc_10`, uma coleta e uma entrega de exemplo. O endpoint `POST /api/maps/route` aceita uma lista de pontos no formato OSRM e retorna distância, duração, provedor e avaliação preliminar do SLA de 120 minutos.
+
+O cálculo considera 10 minutos de coleta, 5 minutos de entrega e 15 minutos de margem de segurança além do deslocamento. As unidades são distribuídas em pontos determinísticos dentro do raio para manter os testes reproduzíveis.
 
 O protótipo usa Leaflet, OpenStreetMap e um endpoint OSRM compatível configurado por `maps.osrmBaseUrl`. Se o serviço de rotas não responder, o sistema usa uma estimativa local de distância geográfica com fator de desvio e velocidade média conservadora. Esse fallback é apenas para desenvolvimento; para produção, deve ser substituído por um serviço de rotas próprio ou homologado.
 

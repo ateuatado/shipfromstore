@@ -35,12 +35,11 @@ final class RouteEstimator
                 return $fallback;
             }
 
-            return [
-                'provider' => 'osrm',
-                'durationSeconds' => (int) round($data['routes'][0]['duration']),
-                'distanceMeters' => (int) round($data['routes'][0]['distance']),
-                'feasible' => true,
-            ];
+            return $this->withOperationalTime(
+                'osrm',
+                (int) round($data['routes'][0]['duration']),
+                (int) round($data['routes'][0]['distance'])
+            );
         } catch (\Throwable) {
             return $fallback;
         }
@@ -57,10 +56,22 @@ final class RouteEstimator
         $roadMeters = $meters * 1.2;
         $durationSeconds = (int) round(($roadMeters / 25000) * 3600);
 
+        return $this->withOperationalTime('haversine-fallback', $durationSeconds, (int) round($roadMeters));
+    }
+
+    private function withOperationalTime(string $provider, int $travelSeconds, int $distanceMeters): array
+    {
+        $config = config('Map');
+        $operationalSeconds = $config->pickupServiceSeconds + $config->deliveryServiceSeconds;
+        $plannedSeconds = $travelSeconds + $operationalSeconds + $config->safetyMarginSeconds;
+
         return [
-            'provider' => 'haversine-fallback',
-            'durationSeconds' => $durationSeconds,
-            'distanceMeters' => (int) round($roadMeters),
+            'provider' => $provider,
+            'travelDurationSeconds' => $travelSeconds,
+            'operationalSeconds' => $operationalSeconds,
+            'safetyMarginSeconds' => $config->safetyMarginSeconds,
+            'durationSeconds' => $plannedSeconds,
+            'distanceMeters' => $distanceMeters,
             'feasible' => true,
         ];
     }

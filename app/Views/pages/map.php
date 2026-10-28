@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h2 mb-1">Mapa de viabilidade</h1>
-        <p class="text-secondary mb-0">Zona simulada entre Moema e Jaguaré, com unidades fictícias.</p>
+        <p class="text-secondary mb-0">Raio sintético de 15 km a partir de <?= esc($center['label']) ?>, com unidades fictícias.</p>
     </div>
     <a class="btn btn-outline-primary" href="<?= site_url('/') ?>">Início</a>
 </div>
@@ -16,6 +16,7 @@
                 <dt class="col-5">Coleta</dt><dd class="col-7"><?= esc($pickup['label']) ?></dd>
                 <dt class="col-5">Entrega</dt><dd class="col-7"><?= esc($delivery['label']) ?></dd>
                 <dt class="col-5">SLA</dt><dd class="col-7">120 minutos após a coleta</dd>
+                <dt class="col-5">Regra</dt><dd class="col-7">15 min operação + 15 min margem</dd>
             </dl>
             <hr>
             <div id="route-status" class="small text-secondary">Selecione uma unidade para calcular a rota.</div>
@@ -30,6 +31,8 @@
 <script>
 window.SHIPFROMSTORE_MAP = <?= json_encode([
     'units' => $units,
+    'center' => $center,
+    'radiusMeters' => $radiusMeters,
     'pickup' => $pickup,
     'delivery' => $delivery,
     'routeUrl' => site_url('api/maps/route'),

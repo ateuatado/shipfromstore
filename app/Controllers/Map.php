@@ -14,6 +14,8 @@ class Map extends BaseController
         return view('pages/map', [
             'title' => 'Mapa de viabilidade | ShipFromStore',
             'units' => $config->units,
+            'center' => $config->center,
+            'radiusMeters' => $config->radiusMeters,
             'pickup' => $config->samplePickup,
             'delivery' => $config->sampleDelivery,
         ]);
@@ -28,8 +30,9 @@ class Map extends BaseController
             return $this->response->setStatusCode(422)->setJSON(['error' => 'Informe pelo menos dois pontos.']);
         }
 
+        $config = config('Map');
         $result = (new RouteEstimator())->estimate($coordinates);
-        $result['slaSeconds'] = 7200;
+        $result['slaSeconds'] = $config->slaSeconds;
         $result['withinSla'] = $result['durationSeconds'] <= $result['slaSeconds'];
 
         return $this->response->setJSON($result);

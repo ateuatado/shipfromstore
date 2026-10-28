@@ -1,6 +1,6 @@
 (() => {
     const config = window.SHIPFROMSTORE_MAP;
-    const map = L.map('shipfromstore-map').setView([-23.575, -46.715], 12);
+    const map = L.map('shipfromstore-map').setView([config.center.lat, config.center.lng], 12);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
@@ -8,6 +8,15 @@
 
     const pickup = L.marker([config.pickup.lat, config.pickup.lng]).addTo(map).bindPopup(config.pickup.label);
     const delivery = L.marker([config.delivery.lat, config.delivery.lng]).addTo(map).bindPopup(config.delivery.label);
+    const coverage = L.circle([config.center.lat, config.center.lng], {
+        radius: config.radiusMeters,
+        color: '#0d6efd',
+        fillColor: '#0d6efd',
+        fillOpacity: 0.05,
+        weight: 2,
+    }).addTo(map).bindPopup(`Área de referência: ${config.center.label}<br>Raio: 15 km`);
+    L.marker([config.center.lat, config.center.lng]).addTo(map).bindPopup(config.center.label);
+    map.fitBounds(coverage.getBounds(), {padding: [18, 18]});
     pickup.openPopup();
     L.circle([config.pickup.lat, config.pickup.lng], { radius: 400, color: '#198754', fillOpacity: 0.08 }).addTo(map);
     L.circle([config.delivery.lat, config.delivery.lng], { radius: 400, color: '#dc3545', fillOpacity: 0.08 }).addTo(map);
