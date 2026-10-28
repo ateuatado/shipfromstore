@@ -72,7 +72,7 @@ final class RouteEstimator
             'safetyMarginSeconds' => $config->safetyMarginSeconds,
             'durationSeconds' => $plannedSeconds,
             'distanceMeters' => $distanceMeters,
-            'feasible' => true,
+            'feasible' => $plannedSeconds <= $config->slaSeconds,
         ];
     }
 

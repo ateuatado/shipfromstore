@@ -38,6 +38,16 @@ O remetente de e-mail do Shield permanece vazio de propósito; defina um endere�
 
 O cálculo considera 10 minutos de coleta, 5 minutos de entrega e 15 minutos de margem de segurança além do deslocamento. As unidades são distribuídas em pontos determinísticos dentro do raio para manter os testes reproduzíveis.
 
+### Massa aleatória do piloto
+
+Para recriar o cenário de demonstração com endereços reais catalogados dentro do território do piloto, execute:
+
+```bash
+php spark db:seed PilotRandomOrdersSeeder
+```
+
+O seeder limpa somente `orders` e `delivery_assignments`, preserva usuários, unidades e autenticação, e cria cinco pedidos por unidade: um pendente, um atribuído, um coletado, um em entrega e um entregue. Cada par é validado pela rota unidade → coleta → entrega, incluindo os tempos operacionais e a margem. Combinações acima de 120 minutos não são gravadas.
+
 O protótipo usa Leaflet, OpenStreetMap e um endpoint OSRM compatível configurado por `maps.osrmBaseUrl`. Se o serviço de rotas não responder, o sistema usa uma estimativa local de distância geográfica com fator de desvio e velocidade média conservadora. Esse fallback é apenas para desenvolvimento; para produção, deve ser substituído por um serviço de rotas próprio ou homologado.
 
 ## TLS/Apache
