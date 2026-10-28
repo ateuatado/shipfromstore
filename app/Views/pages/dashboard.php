@@ -1,9 +1,9 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 <?php
-$statusLabels = ['pending_acceptance' => 'Pendentes de aceite', 'accepted' => 'Aceitos', 'collected' => 'Em entrega', 'delivered' => 'Entregues'];
-$statusClasses = ['pending_acceptance' => 'warning', 'accepted' => 'info', 'collected' => 'primary', 'delivered' => 'success'];
-$orderedStatuses = ['pending_acceptance', 'accepted', 'collected', 'delivered'];
+$statusLabels = ['pending_acceptance' => 'Pendentes de aceite', 'assigned' => 'Atribuídos', 'collected' => 'Coleta confirmada', 'in_transit' => 'Em entrega', 'delivered' => 'Entregues'];
+$statusClasses = ['pending_acceptance' => 'warning', 'assigned' => 'info', 'collected' => 'primary', 'in_transit' => 'primary', 'delivered' => 'success'];
+$orderedStatuses = ['pending_acceptance', 'assigned', 'collected', 'in_transit', 'delivered'];
 ?>
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div><h1 class="h2 mb-1">Pedidos</h1><p class="text-secondary mb-0">Olá, <?= esc($employee['name'] ?? auth()->user()->username) ?>. Acompanhe a operação do seu escopo.</p></div>
