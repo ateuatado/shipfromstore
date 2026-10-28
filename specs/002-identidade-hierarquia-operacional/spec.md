@@ -24,6 +24,15 @@ O piloto utiliza somente dados sintéticos e tem finalidade demonstrativa. Senha
 
 ## Perfis e escopo
 
+## Áreas do piloto
+
+Para manter o piloto pequeno e permitir relatórios consolidados, o território sintético de 15 km será dividido em duas áreas geográficas:
+
+- **Área Norte:** `CenEntEnc_01`, `CenEntEnc_02`, `CenEntEnc_03`, `CenEntEnc_09` e `CenEntEnc_10`.
+- **Área Sul:** `CenEntEnc_04`, `CenEntEnc_05`, `CenEntEnc_06`, `CenEntEnc_07` e `CenEntEnc_08`.
+
+Cada área terá exatamente cinco unidades no piloto. A divisão é sintética, baseada na posição geográfica dos pontos, e poderá ser substituída por uma estrutura nacional sem alterar os perfis de acesso.
+
 ### Gestor de unidade
 
 É vinculado a uma única unidade fictícia e pode visualizar e operar pedidos destinados àquela unidade.
@@ -65,7 +74,7 @@ O gerente não altera decisões operacionais das unidades nesta primeira versão
 |---|---:|---|---|
 | Gestor CenEntEnc_01 | 0001 | Gestor de unidade | CenEntEnc_01 |
 | Gestor CenEntEnc_02 | 0002 | Gestor de unidade | CenEntEnc_02 |
-| Gestor Área Oeste | 0101 | Gestor de área | Área Oeste |
+| Gestor Área Norte | 0101 | Gestor de área | Área Norte |
 | Gerente Território | 1001 | Gerente | Território sintético |
 
 Os exemplos acima são dados de demonstração. A senha de teste não deve ser publicada em ambientes reais.
@@ -78,8 +87,9 @@ Os exemplos acima são dados de demonstração. A senha de teste não deve ser p
 4. Um gestor de área pode visualizar pedidos de todas as unidades da própria área.
 5. Um gerente pode visualizar pedidos de todo o território sintético.
 6. A matrícula deve impedir duplicidade de empregado.
-7. O login local deve funcionar com o Shield.
-8. A futura substituição do login local por LDAP não deve exigir alteração nas regras de escopo.
+7. Os relatórios de área devem consolidar exatamente as cinco unidades vinculadas à área.
+8. O login local deve funcionar com o Shield.
+9. A futura substituição do login local por LDAP não deve exigir alteração nas regras de escopo.
 
 ## Fora do escopo
 
@@ -92,6 +102,5 @@ Os exemplos acima são dados de demonstração. A senha de teste não deve ser p
 
 ## Decisões pendentes
 
-- Definir a quantidade de áreas sintéticas e quais unidades pertencem a cada uma.
 - Definir se haverá um usuário administrador técnico separado dos empregados operacionais.
 - Definir se o gestor de unidade poderá cancelar uma aceitação antes da coleta.

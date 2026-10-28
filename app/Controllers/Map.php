@@ -14,6 +14,7 @@ class Map extends BaseController
         return view('pages/map', [
             'title' => 'Mapa de viabilidade | ShipFromStore',
             'units' => $config->units,
+            'areas' => $config->areas,
             'center' => $config->center,
             'radiusMeters' => $config->radiusMeters,
             'pickup' => $config->samplePickup,

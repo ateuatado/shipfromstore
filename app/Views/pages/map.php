@@ -23,6 +23,7 @@
         </div></div>
         <div class="card shadow-sm mt-3"><div class="card-body">
             <h2 class="h5">Unidades fictícias</h2>
+            <div id="area-summary" class="small text-secondary mb-2"></div>
             <div id="unit-list" class="list-group list-group-flush"></div>
         </div></div>
     </div>
@@ -31,6 +32,7 @@
 <script>
 window.SHIPFROMSTORE_MAP = <?= json_encode([
     'units' => $units,
+    'areas' => $areas,
     'center' => $center,
     'radiusMeters' => $radiusMeters,
     'pickup' => $pickup,

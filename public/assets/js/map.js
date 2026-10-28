@@ -23,6 +23,7 @@
 
     const routeLayer = L.layerGroup().addTo(map);
     const list = document.querySelector('#unit-list');
+    const areaSummary = document.querySelector('#area-summary');
     const status = document.querySelector('#route-status');
     const formatDistance = (meters) => `${(meters / 1000).toFixed(1)} km`;
     const formatDuration = (seconds) => `${Math.round(seconds / 60)} min`;
@@ -50,12 +51,18 @@
     };
 
     config.units.forEach((unit) => {
-        const marker = L.marker([unit.lat, unit.lng]).addTo(map).bindPopup(`<strong>${unit.id}</strong><br>Capacidade: ${unit.capacity}`);
+        const marker = L.marker([unit.lat, unit.lng]).addTo(map).bindPopup(`<strong>${unit.id}</strong><br>${unit.areaName}<br>Capacidade: ${unit.capacity}`);
         marker.on('click', () => calculate(unit));
         const item = document.createElement('button');
         item.type = 'button'; item.className = 'list-group-item list-group-item-action py-2';
-        item.innerHTML = `<span class="fw-semibold">${unit.id}</span><span class="float-end text-secondary">cap. ${unit.capacity}</span>`;
+        item.innerHTML = `<span class="fw-semibold">${unit.id}</span><span class="float-end text-secondary">${unit.areaName}</span>`;
         item.addEventListener('click', () => { map.setView([unit.lat, unit.lng], 14); marker.openPopup(); calculate(unit); });
         list.appendChild(item);
     });
+
+    const areaCounts = config.areas.map((area) => {
+        const count = config.units.filter((unit) => unit.areaId === area.id).length;
+        return `${area.name}: ${count} unidades`;
+    });
+    areaSummary.textContent = areaCounts.join(' · ');
 })();
