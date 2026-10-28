@@ -1,6 +1,21 @@
 (() => {
     const config = window.SHIPFROMSTORE_COURIER;
     const cards = document.querySelectorAll('.courier-order');
+    const updateCountdown = (element, collectedAt) => {
+        const parsed = Date.parse(`${collectedAt.replace(' ', 'T')}Z`);
+        if (Number.isNaN(parsed)) return;
+        const tick = () => {
+            const remaining = Math.max(0, 7200 - Math.floor((Date.now() - parsed) / 1000));
+            const hours = String(Math.floor(remaining / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+            const seconds = String(remaining % 60).padStart(2, '0');
+            element.textContent = `${hours}:${minutes}:${seconds}`;
+            element.classList.toggle('text-danger', remaining <= 900);
+        };
+        tick();
+        window.setInterval(tick, 1000);
+    };
+    document.querySelectorAll('.js-focus-countdown').forEach((element) => updateCountdown(element, element.dataset.collectedAt));
 
     cards.forEach((card) => {
         const contract = card.dataset.contract;
@@ -82,17 +97,7 @@
             } else if (trackingStatus) trackingStatus.textContent = 'Este dispositivo não oferece localização.';
 
             const countdown = card.querySelector('.js-countdown');
-            const collectedAt = Date.parse(`${card.dataset.collectedAt.replace(' ', 'T')}Z`);
-            const tick = () => {
-                const remaining = Math.max(0, 7200 - Math.floor((Date.now() - collectedAt) / 1000));
-                const hours = String(Math.floor(remaining / 3600)).padStart(2, '0');
-                const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
-                const seconds = String(remaining % 60).padStart(2, '0');
-                countdown.textContent = `${hours}:${minutes}:${seconds}`;
-                countdown.classList.toggle('text-danger', remaining <= 900);
-            };
-            tick();
-            window.setInterval(tick, 1000);
+            updateCountdown(countdown, card.dataset.collectedAt);
             const route = `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${card.dataset.pickupLat},${card.dataset.pickupLng};${card.dataset.deliveryLat},${card.dataset.deliveryLng}`;
             card.querySelector('.js-route').href = route;
             card.querySelector('.js-confirm-delivery').addEventListener('click', async () => {

@@ -2,3 +2,25 @@
 body { min-height: 100vh; }
 .navbar-brand { letter-spacing: .02em; }
 .map-panel { min-height: 620px; background: #e9ecef; }
+.route-map { min-height: 620px; background: #e9ecef; }
+.status-bar-row { display: grid; grid-template-columns: 150px 1fr 32px; gap: .75rem; align-items: center; margin-bottom: .75rem; font-size: .85rem; }
+.status-bar { height: .65rem; background: #edf0f5; border-radius: 99px; overflow: hidden; }
+.status-bar i { display: block; height: 100%; border-radius: inherit; }
+.metric-highlight { display: flex; justify-content: space-between; align-items: baseline; padding: .7rem 0; border-bottom: 1px solid #edf0f5; color: #65748b; font-size: .9rem; }
+.metric-highlight:last-child { border-bottom: 0; }
+.metric-highlight strong { color: #172b4d; font-size: 1.35rem; }
+.courier-focus { border-left: 4px solid var(--bs-primary); }
+.focus-countdown { color: var(--bs-primary); font-size: 2rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.courier-order .card-body { padding: 1.1rem; }
+@media (max-width: 575.98px) {
+    body { font-size: .9rem; }
+    h1.h2 { font-size: 1.5rem; }
+    .container { padding-left: .8rem; padding-right: .8rem; }
+    .btn-group { width: 100%; flex-wrap: wrap; }
+    .btn-group .btn { flex: 1 1 auto; font-size: .78rem; padding: .45rem .55rem; }
+    .dashboard-metrics .display-6 { font-size: 1.8rem; }
+    .status-bar-row { grid-template-columns: 112px 1fr 24px; gap: .45rem; font-size: .75rem; }
+    .courier-focus .card-body { padding: .85rem; }
+    .focus-countdown { font-size: 1.7rem; }
+    .courier-order dl dt, .courier-order dl dd { margin-bottom: .35rem; }
+}

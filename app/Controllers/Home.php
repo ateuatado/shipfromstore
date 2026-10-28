@@ -48,7 +48,34 @@ class Home extends BaseController
             $orders = array_values(array_filter($orders, static fn (array $order): bool => $order['areaId'] === $employee['area_id']));
         }
 
-        return view('pages/' . $page, ['title' => $title . ' | ShipFromStore', 'employee' => $employee, 'orders' => $orders]);
+        return view('pages/' . $page, [
+            'title' => $title . ' | ShipFromStore',
+            'employee' => $employee,
+            'orders' => $orders,
+            'metrics' => $this->metrics($orders),
+        ]);
+    }
+
+    private function metrics(array $orders): array
+    {
+        $deliveredDurations = [];
+        foreach ($orders as $order) {
+            if ($order['collectedAt'] !== null && $order['deliveredAt'] !== null) {
+                $deliveredDurations[] = max(0, strtotime($order['deliveredAt']) - strtotime($order['collectedAt']));
+            }
+        }
+
+        $onTime = count(array_filter($deliveredDurations, static fn (int $seconds): bool => $seconds <= 7200));
+
+        return [
+            'total' => count($orders),
+            'pending' => count(array_filter($orders, static fn (array $order): bool => $order['status'] === 'pending_acceptance')),
+            'active' => count(array_filter($orders, static fn (array $order): bool => in_array($order['status'], ['assigned', 'collected', 'in_transit'], true))),
+            'delivered' => count(array_filter($orders, static fn (array $order): bool => $order['status'] === 'delivered')),
+            'onTime' => $onTime,
+            'slaRate' => $deliveredDurations === [] ? null : (int) round(($onTime / count($deliveredDurations)) * 100),
+            'averageMinutes' => $deliveredDurations === [] ? null : (int) round(array_sum($deliveredDurations) / count($deliveredDurations) / 60),
+        ];
     }
 
     private function ordersForEmployee(?array $employee, int $userId, ?array $statuses = null): array
@@ -66,7 +93,11 @@ class Home extends BaseController
             $builder->whereIn('o.status', $statuses);
         }
 
-        return $builder->orderBy("FIELD(o.status, 'pending_acceptance', 'assigned', 'collected', 'in_transit', 'delivered')", '', false)
+        $statusOrder = ($employee['role'] ?? null) === 'entregador'
+            ? "FIELD(o.status, 'in_transit', 'collected', 'assigned', 'delivered', 'pending_acceptance')"
+            : "FIELD(o.status, 'pending_acceptance', 'assigned', 'collected', 'in_transit', 'delivered')";
+
+        return $builder->orderBy($statusOrder, '', false)
             ->orderBy('o.received_at', 'DESC')
             ->get()->getResultArray();
     }

@@ -20,7 +20,7 @@
             </div>
         </div>
     </nav>
-    <main class="container py-5">
+    <main class="container py-4">
         <?= $this->renderSection('content') ?>
     </main>
     <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>

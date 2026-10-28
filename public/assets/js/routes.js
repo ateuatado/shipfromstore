@@ -1,0 +1,46 @@
+(() => {
+    const config = window.SHIPFROMSTORE_ROUTES;
+    const map = L.map('routes-map').setView([-23.5294829, -46.7386242], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap contributors', maxZoom: 19}).addTo(map);
+    const layer = L.layerGroup().addTo(map);
+    const list = document.getElementById('routes-list');
+    const summary = document.getElementById('routes-summary');
+    const labels = {collected: 'Coleta confirmada', in_transit: 'Em entrega', delivered: 'Entregue'};
+    const colors = {collected: '#0dcaf0', in_transit: '#2457d6', delivered: '#198754'};
+
+    const render = (routes) => {
+        layer.clearLayers();
+        list.innerHTML = '';
+        summary.textContent = `${routes.length} atendimento(s) com percurso disponível.`;
+        const bounds = [];
+        routes.forEach((route) => {
+            const points = route.points.map((point) => [point.latitude, point.longitude]);
+            if (points.length > 0) {
+                const line = L.polyline(points, {color: colors[route.status] || '#6c757d', weight: 5, opacity: .8}).addTo(layer);
+                line.bindPopup(`<strong>${route.contract}</strong><br>${route.courierName}<br>${labels[route.status] || route.status}`);
+                points.forEach((point) => bounds.push(point));
+                L.circleMarker(points[0], {radius: 6, color: '#172b4d', fillColor: '#fff', fillOpacity: 1}).bindTooltip(`Início · ${route.contract}`).addTo(layer);
+                L.circleMarker(points[points.length - 1], {radius: 6, color: colors[route.status] || '#6c757d', fillColor: colors[route.status] || '#6c757d', fillOpacity: 1}).bindTooltip(`Último ponto · ${route.contract}`).addTo(layer);
+            }
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'list-group-item list-group-item-action';
+            item.innerHTML = `<div class="d-flex justify-content-between gap-2"><strong>${route.contract}</strong><span class="badge" style="background:${colors[route.status] || '#6c757d'}">${labels[route.status] || route.status}</span></div><div class="small text-secondary mt-1">${route.courierName} · ${route.unitId}</div><div class="small text-secondary">${route.points.length} ponto(s) registrado(s)</div>`;
+            item.addEventListener('click', () => { if (points.length > 0) map.fitBounds(points, {padding: [30, 30]}); });
+            list.appendChild(item);
+        });
+        if (bounds.length > 0) map.fitBounds(bounds, {padding: [25, 25]});
+    };
+
+    const load = async () => {
+        summary.textContent = 'Atualizando percursos...';
+        try {
+            const response = await fetch(config.dataUrl, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Não foi possível carregar os percursos.');
+            render(result.routes || []);
+        } catch (error) { summary.textContent = error.message; }
+    };
+    document.getElementById('routes-refresh').addEventListener('click', load);
+    load();
+})();
