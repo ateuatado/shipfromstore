@@ -41,5 +41,5 @@ window.SHIPFROMSTORE_MAP = <?= json_encode([
 ], JSON_THROW_ON_ERROR) ?>;
 </script>
 <script src="<?= base_url('assets/leaflet/leaflet.js') ?>"></script>
-<script src="<?= base_url('assets/js/map.js') ?>"></script>
+<script src="<?= base_url('assets/js/map.js?v=20261029-2') ?>"></script>
 <?= $this->endSection() ?>

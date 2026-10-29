@@ -1,7 +1,7 @@
 (() => {
     const config = window.SHIPFROMSTORE_ROUTES;
     const map = L.map('routes-map').setView([-23.5294829, -46.7386242], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap contributors', maxZoom: 19}).addTo(map);
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {attribution: 'Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap (CC-BY-SA)', maxZoom: 19}).addTo(map);
     const layer = L.layerGroup().addTo(map);
     const list = document.getElementById('routes-list');
     const summary = document.getElementById('routes-summary');

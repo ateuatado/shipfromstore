@@ -1,9 +1,9 @@
 (() => {
     const config = window.SHIPFROMSTORE_MAP;
     const map = L.map('shipfromstore-map').setView([config.center.lat, config.center.lng], 12);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
+        attribution: 'Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap (CC-BY-SA)',
     }).addTo(map);
 
     const pickup = L.marker([config.pickup.lat, config.pickup.lng]).addTo(map).bindPopup(config.pickup.label);

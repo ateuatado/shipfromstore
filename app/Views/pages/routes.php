@@ -11,5 +11,5 @@
 <link rel="stylesheet" href="<?= base_url('assets/leaflet/leaflet.css') ?>">
 <script>window.SHIPFROMSTORE_ROUTES = {dataUrl: <?= json_encode(site_url('dashboard/routes/data')) ?>};</script>
 <script src="<?= base_url('assets/leaflet/leaflet.js') ?>"></script>
-<script src="<?= base_url('assets/js/routes.js') ?>"></script>
+<script src="<?= base_url('assets/js/routes.js?v=20261029-2') ?>"></script>
 <?= $this->endSection() ?>
