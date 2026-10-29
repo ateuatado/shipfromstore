@@ -81,13 +81,16 @@ class Home extends BaseController
     private function ordersForEmployee(?array $employee, int $userId, ?array $statuses = null): array
     {
         $builder = db_connect()->table('orders o')
-            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt');
+            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName');
 
         if (($employee['role'] ?? null) === 'entregador') {
             $builder->join('delivery_assignments da', 'da.contract = o.contract')
                 ->where('da.courier_user_id', $userId)
                 ->where('da.unit_id', $employee['unit_id']);
+        } else {
+            $builder->join('delivery_assignments da', 'da.contract = o.contract', 'left');
         }
+        $builder->join('employees courier', 'courier.user_id = da.courier_user_id', 'left');
 
         if ($statuses !== null) {
             $builder->whereIn('o.status', $statuses);

@@ -7,6 +7,7 @@
     const summary = document.getElementById('routes-summary');
     const labels = {collected: 'Coleta confirmada', in_transit: 'Em entrega', delivered: 'Entregue'};
     const colors = {collected: '#0dcaf0', in_transit: '#2457d6', delivered: '#198754'};
+    const requestedContract = new URLSearchParams(window.location.search).get('contract');
 
     const render = (routes) => {
         layer.clearLayers();
@@ -50,6 +51,12 @@
             list.appendChild(item);
         });
         if (bounds.length > 0) map.fitBounds(bounds, {padding: [25, 25]});
+        if (requestedContract) {
+            const requested = routes.find((route) => route.contract === requestedContract);
+            if (requested && requested.points.length > 0) {
+                map.fitBounds(requested.points.map((point) => [point.latitude, point.longitude]), {padding: [35, 35]});
+            }
+        }
     };
 
     const load = async () => {
