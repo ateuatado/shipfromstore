@@ -56,6 +56,12 @@ class Home extends BaseController
             $orders = array_values(array_filter($orders, static fn (array $order): bool => $order['areaId'] === $employee['area_id']));
         }
 
+        // Area and territory views represent one collection, not each unit
+        // offer sent in parallel. Keep the first active offer per collection.
+        if (($employee['role'] ?? null) !== 'gestor_unidade') {
+            $orders = $this->uniqueCollections($orders);
+        }
+
         return view('pages/' . $page, [
             'title' => $title . ' | ShipFromStore',
             'employee' => $employee,
@@ -89,7 +95,8 @@ class Home extends BaseController
     private function ordersForEmployee(?array $employee, int $userId, ?array $statuses = null): array
     {
         $builder = db_connect()->table('orders o')
-            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, o.acceptance_deadline_at AS acceptanceDeadlineAt, o.sla_deadline_at AS slaDeadlineAt, o.partner_forwarded_at AS partnerForwardedAt, o.partner_name AS partnerName, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName');
+            ->select('o.contract, o.collection_id AS collectionId, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, o.acceptance_deadline_at AS acceptanceDeadlineAt, o.sla_deadline_at AS slaDeadlineAt, o.partner_forwarded_at AS partnerForwardedAt, o.partner_name AS partnerName, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName')
+            ->where('o.status !=', 'offer_cancelled');
 
         if (($employee['role'] ?? null) === 'entregador') {
             $builder->join('delivery_assignments da', 'da.contract = o.contract')
@@ -111,5 +118,18 @@ class Home extends BaseController
         return $builder->orderBy($statusOrder, '', false)
             ->orderBy('o.received_at', 'DESC')
             ->get()->getResultArray();
+    }
+
+    private function uniqueCollections(array $orders): array
+    {
+        $unique = [];
+        foreach ($orders as $order) {
+            $key = (string) ($order['collectionId'] ?? $order['contract']);
+            if (! isset($unique[$key])) {
+                $unique[$key] = $order;
+            }
+        }
+
+        return array_values($unique);
     }
 }

@@ -42,7 +42,8 @@ final class Simulation extends BaseController
         }
 
         $result = (new OrderLifecycle())->createSimulation($payload, (int) auth()->user()->id);
-        return redirect()->to(site_url('simulator'))->with('message', sprintf('Pedido %s enviado para %s. Prazo de aceite: 15 minutos.', $result['contract'], $result['unit']['id']));
+        $unitNames = implode(', ', array_column($result['units'], 'id'));
+        return redirect()->to(site_url('simulator'))->with('message', sprintf('Uma coleta (%s) foi disparada para as unidades %s. A primeira unidade que aceitar vence; prazo: 15 minutos.', $result['collectionId'], $unitNames));
     }
 
     private function adminEmployee(): ?array

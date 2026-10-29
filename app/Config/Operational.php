@@ -8,5 +8,6 @@ final class Operational extends BaseConfig
 {
     public int $acceptanceWindowMinutes = 15;
     public int $deliveryWindowMinutes = 120;
+    public int $offerUnitCount = 3;
     public string $partnerName = 'Parceiro logístico';
 }

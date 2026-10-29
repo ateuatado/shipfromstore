@@ -57,7 +57,14 @@ final class Assignments extends BaseController
 
         $now = Time::now('UTC')->toDateTimeString();
         $db->transStart();
+        // The first unit to accept wins the collection. All competing offers
+        // for the same collection immediately lose their validity.
         $db->table('orders')->where('id', $order['id'])->update(['status' => 'assigned', 'accepted_at' => $now, 'updated_at' => $now]);
+        $db->table('orders')
+            ->where('collection_id', $order['collection_id'])
+            ->where('id !=', $order['id'])
+            ->where('status', 'pending_acceptance')
+            ->update(['status' => 'offer_cancelled', 'updated_at' => $now]);
         $db->table('delivery_assignments')->insert([
             'contract' => $order['contract'],
             'unit_id' => $order['unit_id'],
