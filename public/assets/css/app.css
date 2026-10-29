@@ -40,6 +40,15 @@ small { font-size: .833rem; }
 .bg-white { color: var(--background) !important; }
 .bg-white .text-secondary { color: #3f5199 !important; }
 .bg-white h1, .bg-white h2, .bg-white h3, .bg-white h4, .bg-white h5 { color: var(--background); }
+.home-hero { background: linear-gradient(135deg, #ffffff 0%, #f6f7fb 100%) !important; }
+.home-hero-content { display: grid; gap: 1.25rem; align-items: center; }
+.home-hero-icon { width: 64px; height: 64px; display: grid; place-items: center; border-radius: 1rem; color: var(--background); background: var(--primary); box-shadow: 0 .5rem 1rem rgba(7, 20, 39, .15); }
+.home-hero-action { white-space: nowrap; }
+.dashboard-nav { min-width: 0; display: flex; flex-wrap: wrap; gap: .45rem; }
+.dashboard-nav .btn { flex: 0 0 auto; border-radius: 999px !important; }
+@media (min-width: 768px) {
+    .home-hero-content { grid-template-columns: auto minmax(0, 1fr) auto; gap: 1.5rem; }
+}
 .bg-primary { background-color: var(--primary) !important; color: var(--background) !important; }
 .text-primary { color: var(--primary) !important; }
 .text-secondary { color: var(--accent) !important; }
@@ -99,6 +108,7 @@ h2.h6 { font-size: 1rem; font-weight: 700; }
 .focus-countdown { color: var(--bs-primary); font-size: 2rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
 .courier-order .card-body { padding: 1.1rem; }
 @media (max-width: 575.98px) {
+    main.container { width: 100%; max-width: none; }
     body { font-size: .9rem; }
     h1 { font-size: 2rem; }
     h1.h2 { font-size: 2rem; }
@@ -107,8 +117,9 @@ h2.h6 { font-size: 1rem; font-weight: 700; }
     h4 { font-size: 1.25rem; }
     h5 { font-size: 1.1rem; }
     .container { padding-left: .8rem; padding-right: .8rem; }
-    .btn-group { width: 100%; flex-wrap: wrap; }
-    .btn-group .btn { flex: 1 1 auto; font-size: .78rem; padding: .45rem .55rem; }
+    .dashboard-nav { width: 100%; justify-content: center; overflow: visible; }
+    .dashboard-nav .btn { font-size: .82rem; padding: .5rem .8rem; }
+    .dashboard-metrics .card-body { padding: .8rem; }
     .dashboard-metrics .display-6 { font-size: 1.8rem; }
     .status-bar-row { grid-template-columns: 112px 1fr 24px; gap: .45rem; font-size: .75rem; }
     .courier-focus .card-body { padding: .85rem; }

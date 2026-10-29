@@ -22,11 +22,31 @@
                 L.circleMarker(points[0], {radius: 6, color: '#172b4d', fillColor: '#fff', fillOpacity: 1}).bindTooltip(`Início · ${route.contract}`).addTo(layer);
                 L.circleMarker(points[points.length - 1], {radius: 6, color: colors[route.status] || '#6c757d', fillColor: colors[route.status] || '#6c757d', fillOpacity: 1}).bindTooltip(`Último ponto · ${route.contract}`).addTo(layer);
             }
-            const item = document.createElement('button');
+            const item = document.createElement('div');
             item.type = 'button';
             item.className = 'list-group-item list-group-item-action';
-            item.innerHTML = `<div class="d-flex justify-content-between gap-2"><strong>${route.contract}</strong><span class="badge" style="background:${colors[route.status] || '#6c757d'}">${labels[route.status] || route.status}</span></div><div class="small text-secondary mt-1">${route.courierName} · ${route.unitId}</div><div class="small text-secondary">${route.points.length} ponto(s) registrado(s)</div>`;
+            item.tabIndex = 0;
+            const distance = route.distanceMeters ? `${(route.distanceMeters / 1000).toFixed(1)} km` : 'sem distância';
+            const elapsed = route.minutesAfterCollection === null ? 'em andamento' : `${route.minutesAfterCollection} min após coleta`;
+            item.innerHTML = `<div class="d-flex justify-content-between gap-2"><strong>${route.contract}</strong><span class="badge" style="background:${colors[route.status] || '#6c757d'}">${labels[route.status] || route.status}</span></div><div class="small text-secondary mt-1">${route.courierName} · ${route.unitId}</div><div class="small text-secondary">${route.points.length} ponto(s) visíveis · ${distance} · ${elapsed}</div><div class="d-flex justify-content-between align-items-center gap-2 mt-2"><span class="small text-secondary">${route.privacyNotice || ''}</span><button type="button" class="btn btn-sm btn-outline-primary js-share-route">Link do cliente</button></div>`;
             item.addEventListener('click', () => { if (points.length > 0) map.fitBounds(points, {padding: [30, 30]}); });
+            item.addEventListener('keydown', (event) => { if (event.key === 'Enter' && points.length > 0) map.fitBounds(points, {padding: [30, 30]}); });
+            item.querySelector('.js-share-route').addEventListener('click', async (event) => {
+                event.stopPropagation();
+                const button = event.currentTarget;
+                button.disabled = true;
+                button.textContent = 'Gerando...';
+                try {
+                    const response = await fetch(config.shareUrl, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, body: JSON.stringify({contract: route.contract, mode: 'approximate'})});
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Não foi possível gerar o link.');
+                    await navigator.clipboard.writeText(result.url);
+                    button.textContent = 'Link copiado';
+                } catch (error) {
+                    button.disabled = false;
+                    button.textContent = error.message;
+                }
+            });
             list.appendChild(item);
         });
         if (bounds.length > 0) map.fitBounds(bounds, {padding: [25, 25]});

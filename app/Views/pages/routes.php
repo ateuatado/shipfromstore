@@ -9,7 +9,7 @@
     <div class="col-lg-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Atendimentos</h2><button id="routes-refresh" class="btn btn-sm btn-outline-primary">Atualizar</button></div><div id="routes-summary" class="small text-secondary mb-3">Carregando percursos...</div><div id="routes-list" class="list-group list-group-flush"></div></div></div></div>
 </div>
 <link rel="stylesheet" href="<?= base_url('assets/leaflet/leaflet.css') ?>">
-<script>window.SHIPFROMSTORE_ROUTES = {dataUrl: <?= json_encode(site_url('dashboard/routes/data')) ?>};</script>
+<script>window.SHIPFROMSTORE_ROUTES = {dataUrl: <?= json_encode(site_url('dashboard/routes/data')) ?>, shareUrl: <?= json_encode(site_url('dashboard/routes/share')) ?>};</script>
 <script src="<?= base_url('assets/leaflet/leaflet.js') ?>"></script>
-<script src="<?= base_url('assets/js/routes.js?v=20261029-2') ?>"></script>
+<script src="<?= base_url('assets/js/routes.js?v=20261029-3') ?>"></script>
 <?= $this->endSection() ?>
