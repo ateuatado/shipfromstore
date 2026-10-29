@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Services\OrderLifecycle;
+use CodeIgniter\HTTP\ResponseInterface;
+
 class Home extends BaseController
 {
     public function index(): string
@@ -9,27 +12,32 @@ class Home extends BaseController
         return view('pages/home', ['title' => 'ShipFromStore']);
     }
 
-    public function dashboard(): string
+    public function dashboard(): string|ResponseInterface
     {
         return $this->operations('dashboard', 'Pedidos');
     }
 
-    public function pickups(): string
+    public function pickups(): string|ResponseInterface
     {
         return $this->operations('pickups', 'Coletas');
     }
 
-    public function deliveries(): string
+    public function deliveries(): string|ResponseInterface
     {
         return $this->operations('deliveries', 'Pedidos entregues');
     }
 
-    private function operations(string $page, string $title): string
+    private function operations(string $page, string $title): string|ResponseInterface
     {
+        (new OrderLifecycle())->processAcceptanceTimeouts();
         $user = auth()->user();
         $employee = db_connect()->table('employees')
             ->where('user_id', $user->id)
             ->get()->getRowArray();
+
+        if (($employee['role'] ?? null) === 'administrador') {
+            return redirect()->to(site_url('simulator'));
+        }
 
         if (($employee['role'] ?? null) === 'entregador') {
             return view('pages/courier', [
@@ -81,7 +89,7 @@ class Home extends BaseController
     private function ordersForEmployee(?array $employee, int $userId, ?array $statuses = null): array
     {
         $builder = db_connect()->table('orders o')
-            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName');
+            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, o.acceptance_deadline_at AS acceptanceDeadlineAt, o.sla_deadline_at AS slaDeadlineAt, o.partner_forwarded_at AS partnerForwardedAt, o.partner_name AS partnerName, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName');
 
         if (($employee['role'] ?? null) === 'entregador') {
             $builder->join('delivery_assignments da', 'da.contract = o.contract')

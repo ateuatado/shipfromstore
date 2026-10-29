@@ -37,6 +37,7 @@ final class Courier extends BaseController
         file_put_contents($directory . DIRECTORY_SEPARATOR . $hash . '.png', $binary);
 
         $now = Time::now('UTC')->toDateTimeString();
+        $slaDeadline = Time::now('UTC')->addMinutes((int) config('Operational')->deliveryWindowMinutes)->toDateTimeString();
         $db = db_connect();
         $db->transStart();
         $db->table('delivery_assignments')->where('id', $assignment['assignment_id'])->update([
@@ -49,11 +50,12 @@ final class Courier extends BaseController
         $db->table('orders')->where('contract', $contract)->update([
             'status' => 'collected',
             'collected_at' => $now,
+            'sla_deadline_at' => $slaDeadline,
             'updated_at' => $now,
         ]);
         $db->transComplete();
 
-        return $this->response->setJSON(['ok' => true, 'collectedAt' => $now, 'slaSeconds' => 7200]);
+        return $this->response->setJSON(['ok' => true, 'collectedAt' => $now, 'slaDeadlineAt' => $slaDeadline, 'slaSeconds' => 7200]);
     }
 
     public function confirmDelivery(): ResponseInterface

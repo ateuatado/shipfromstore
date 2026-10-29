@@ -1,14 +1,18 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 <?php
-$statusLabels = ['pending_acceptance' => 'Pendentes de aceite', 'assigned' => 'Atribuídos', 'collected' => 'Coleta confirmada', 'in_transit' => 'Em entrega', 'delivered' => 'Entregues'];
-$statusClasses = ['pending_acceptance' => 'warning', 'assigned' => 'info', 'collected' => 'primary', 'in_transit' => 'primary', 'delivered' => 'success'];
-$orderedStatuses = ['pending_acceptance', 'assigned', 'collected', 'in_transit', 'delivered'];
+$statusLabels = ['pending_acceptance' => 'Pendentes de aceite', 'partner_forwarded' => 'Encaminhados ao parceiro', 'assigned' => 'Atribuídos', 'collected' => 'Coleta confirmada', 'in_transit' => 'Em entrega', 'delivered' => 'Entregues'];
+$statusClasses = ['pending_acceptance' => 'warning', 'partner_forwarded' => 'danger', 'assigned' => 'info', 'collected' => 'primary', 'in_transit' => 'primary', 'delivered' => 'success'];
+$orderedStatuses = ['pending_acceptance', 'partner_forwarded', 'assigned', 'collected', 'in_transit', 'delivered'];
+$pendingAcceptance = array_values(array_filter($orders, static fn (array $order): bool => $order['status'] === 'pending_acceptance'));
+$partnerForwarded = array_values(array_filter($orders, static fn (array $order): bool => $order['status'] === 'partner_forwarded'));
 ?>
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div><h1 class="h2 mb-1">Pedidos</h1><p class="text-secondary mb-0">Olá, <?= esc($employee['name'] ?? auth()->user()->username) ?>. Acompanhe a operação do seu escopo.</p></div>
     <div class="dashboard-nav btn-group" role="group" aria-label="Navegação operacional"><a class="btn btn-primary" href="<?= site_url('dashboard') ?>">Pedidos</a><a class="btn btn-outline-primary" href="<?= site_url('dashboard/pickups') ?>">Coletas</a><a class="btn btn-outline-primary" href="<?= site_url('dashboard/deliveries') ?>">Entregues</a><a class="btn btn-outline-primary" href="<?= site_url('dashboard/routes') ?>">Percursos</a><?php if (($employee['role'] ?? null) === 'gestor_unidade'): ?><a class="btn btn-outline-primary" href="<?= site_url('dashboard/assignments') ?>">Atribuir</a><?php endif ?></div>
 </div>
+<?php if ($pendingAcceptance !== []): ?><div class="alert alert-warning operational-alert" role="alert"><strong>Atenção:</strong> <?= count($pendingAcceptance) ?> pedido(s) aguardam aceite da unidade. O prazo termina em <span data-countdown-deadline="<?= esc($pendingAcceptance[0]['acceptanceDeadlineAt'] ?? '') ?>">carregando...</span>.</div><?php endif ?>
+<?php if ($partnerForwarded !== []): ?><div class="alert alert-danger operational-alert" role="alert"><strong>Reencaminhamento:</strong> <?= count($partnerForwarded) ?> pedido(s) ultrapassaram 15 minutos sem aceite e foram enviados ao parceiro.</div><?php endif ?>
 <div class="row g-3 mb-4 dashboard-metrics">
     <?php foreach ($orderedStatuses as $status): ?><div class="col-6 col-sm-6 col-xl-3"><div class="card h-100 shadow-sm"><div class="card-body"><div class="text-secondary small"><?= esc($statusLabels[$status]) ?></div><div class="display-6 fw-semibold"><?= count(array_filter($orders, static fn (array $order): bool => $order['status'] === $status)) ?></div></div></div></div><?php endforeach ?>
 </div>

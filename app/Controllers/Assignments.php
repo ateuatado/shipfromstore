@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Services\OrderLifecycle;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\I18n\Time;
 
@@ -11,6 +12,7 @@ final class Assignments extends BaseController
 {
     public function index(): string|ResponseInterface
     {
+        (new OrderLifecycle())->processAcceptanceTimeouts();
         $context = $this->managerContext();
         if ($context === null) {
             return $this->response->setStatusCode(403)->setBody('Acesso não permitido.');
