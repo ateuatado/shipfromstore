@@ -23,17 +23,17 @@
             .addTo(map)
             .bindPopup(label);
 
-        const arrowLat = from.lat + ((to.lat - from.lat) * 0.78);
-        const arrowLng = from.lng + ((to.lng - from.lng) * 0.78);
+        const arrowLat = to.lat;
+        const arrowLng = to.lng;
         // Longitude grows to the right, while latitude grows upward in the
         // map. The negative latitude delta keeps the arrow aligned on screen.
         const angle = Math.atan2(-(to.lat - from.lat), to.lng - from.lng) * 180 / Math.PI;
         L.marker([arrowLat, arrowLng], {
             icon: L.divIcon({
                 className: 'map-flow-arrow',
-                html: `<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="transform:rotate(${angle}deg);filter:drop-shadow(0 1px 1px #fff)"><path d="M3 4 L27 15 L3 26 L8 15 Z" fill="${color}" stroke="#fff" stroke-width="1.5"/></svg>`,
+                html: `<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="transform:rotate(${angle}deg);transform-origin:27px 15px;filter:drop-shadow(0 1px 1px #fff)"><path d="M3 4 L27 15 L3 26 L8 15 Z" fill="${color}" stroke="#fff" stroke-width="1.5"/></svg>`,
                 iconSize: [30, 30],
-                iconAnchor: [15, 15],
+                iconAnchor: [27, 15],
             }),
             interactive: false,
         }).addTo(map);
