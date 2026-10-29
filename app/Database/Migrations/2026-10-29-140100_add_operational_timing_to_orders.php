@@ -10,14 +10,29 @@ final class AddOperationalTimingToOrders extends Migration
 {
     public function up(): void
     {
-        $this->forge->addColumn('orders', [
-            'acceptance_deadline_at' => ['type' => 'datetime', 'null' => true],
-            'sla_deadline_at' => ['type' => 'datetime', 'null' => true],
-            'partner_forwarded_at' => ['type' => 'datetime', 'null' => true],
-            'partner_name' => ['type' => 'varchar', 'constraint' => 120, 'null' => true],
-        ]);
-        $this->forge->addKey('acceptance_deadline_at', 'orders_acceptance_deadline_index');
-        $this->forge->addKey('sla_deadline_at', 'orders_sla_deadline_index');
+        // The pilot database may already contain some of these columns because
+        // the previous deployment partially applied this migration.
+        $columns = [];
+
+        if (! $this->db->fieldExists('acceptance_deadline_at', 'orders')) {
+            $columns['acceptance_deadline_at'] = ['type' => 'datetime', 'null' => true];
+        }
+
+        if (! $this->db->fieldExists('sla_deadline_at', 'orders')) {
+            $columns['sla_deadline_at'] = ['type' => 'datetime', 'null' => true];
+        }
+
+        if (! $this->db->fieldExists('partner_forwarded_at', 'orders')) {
+            $columns['partner_forwarded_at'] = ['type' => 'datetime', 'null' => true];
+        }
+
+        if (! $this->db->fieldExists('partner_name', 'orders')) {
+            $columns['partner_name'] = ['type' => 'varchar', 'constraint' => 120, 'null' => true];
+        }
+
+        if ($columns !== []) {
+            $this->forge->addColumn('orders', $columns);
+        }
     }
 
     public function down(): void
