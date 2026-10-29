@@ -14,4 +14,30 @@ document.addEventListener('DOMContentLoaded', () => {
         update();
         window.setInterval(update, 1000);
     });
+
+    document.querySelectorAll('[data-random-location]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const form = button.closest('[data-simulator-form]');
+            const type = button.dataset.randomLocation;
+            const endpoint = form?.dataset.randomLocationUrl;
+            if (!form || !endpoint) return;
+
+            button.disabled = true;
+            const originalLabel = button.textContent;
+            button.textContent = 'Sorteando...';
+            try {
+                const response = await fetch(endpoint, {headers: {Accept: 'application/json'}});
+                if (!response.ok) throw new Error('Falha ao sortear endereço');
+                const location = await response.json();
+                form.querySelector(`#${type}_address`).value = location.address;
+                form.querySelector(`#${type}_lat`).value = location.lat;
+                form.querySelector(`#${type}_lng`).value = location.lng;
+            } catch (error) {
+                window.alert('Não foi possível sortear o endereço agora.');
+            } finally {
+                button.disabled = false;
+                button.textContent = originalLabel;
+            }
+        });
+    });
 });
