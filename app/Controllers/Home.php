@@ -58,6 +58,8 @@ class Home extends BaseController
 
         // Area and territory views represent one collection, not each unit
         // offer sent in parallel. Keep the first active offer per collection.
+        $mapOrders = $orders;
+
         if (($employee['role'] ?? null) !== 'gestor_unidade') {
             $orders = $this->uniqueCollections($orders);
         }
@@ -66,6 +68,7 @@ class Home extends BaseController
             'title' => $title . ' | ShipFromStore',
             'employee' => $employee,
             'orders' => $orders,
+            'mapOrders' => $mapOrders,
             'metrics' => $this->metrics($orders),
         ]);
     }
