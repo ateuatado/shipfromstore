@@ -14,7 +14,11 @@
     }).addTo(map);
 
     const bounds = L.latLngBounds([]);
+    const flowKeys = new Set();
     const addFlow = (from, to, color, label) => {
+        const key = `${from.lat},${from.lng}->${to.lat},${to.lng}`;
+        if (flowKeys.has(key)) return;
+        flowKeys.add(key);
         L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {color, weight: 3, opacity: 0.78})
             .addTo(map)
             .bindPopup(label);
@@ -50,7 +54,7 @@
             addMarker(order.unit, '#0d6efd', `Unidade ${order.unit.id}`, `${order.unit.areaName}<br>${label}`);
             addFlow(order.unit, order.pickup, '#0d6efd', `Unidade ${order.unit.id} → ponto de coleta`);
         }
-        addFlow(order.pickup, order.delivery, '#dc3545', 'Ponto de coleta → ponto de entrega');
+        addFlow(order.pickup, order.delivery, '#198754', 'Ponto de coleta → ponto de entrega');
     });
 
     if (bounds.isValid()) map.fitBounds(bounds, {padding: [24, 24]});
