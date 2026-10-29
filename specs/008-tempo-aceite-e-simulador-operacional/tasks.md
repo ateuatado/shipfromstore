@@ -8,5 +8,5 @@
 - [x] Criar contador visual de aceite.
 - [x] Registrar o prazo de entrega após a coleta.
 - [x] Exibir avisos de urgência e reencaminhamento.
-- [ ] Criar rotina agendada independente de acesso às telas.
+- [x] Criar comando para rotina agendada independente de acesso às telas.
 - [ ] Criar relatório histórico de tempos por entregador.
