@@ -19,15 +19,17 @@
             .addTo(map)
             .bindPopup(label);
 
-        const arrowLat = from.lat + ((to.lat - from.lat) * 0.62);
-        const arrowLng = from.lng + ((to.lng - from.lng) * 0.62);
-        const angle = Math.atan2(to.lat - from.lat, to.lng - from.lng) * 180 / Math.PI;
+        const arrowLat = from.lat + ((to.lat - from.lat) * 0.78);
+        const arrowLng = from.lng + ((to.lng - from.lng) * 0.78);
+        // Longitude grows to the right, while latitude grows upward in the
+        // map. The negative latitude delta keeps the arrow aligned on screen.
+        const angle = Math.atan2(-(to.lat - from.lat), to.lng - from.lng) * 180 / Math.PI;
         L.marker([arrowLat, arrowLng], {
             icon: L.divIcon({
                 className: 'map-flow-arrow',
-                html: `<span style="display:block;color:${color};font-size:24px;font-weight:700;line-height:22px;transform:rotate(${angle}deg);text-shadow:0 1px 2px #fff;">➜</span>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12],
+                html: `<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" style="transform:rotate(${angle}deg);filter:drop-shadow(0 1px 1px #fff)"><path d="M3 4 L27 15 L3 26 L8 15 Z" fill="${color}" stroke="#fff" stroke-width="1.5"/></svg>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
             }),
             interactive: false,
         }).addTo(map);
