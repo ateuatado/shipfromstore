@@ -107,6 +107,10 @@ h2.h6 { font-size: 1rem; font-weight: 700; }
 .courier-focus { border-left: 4px solid var(--bs-primary); }
 .focus-countdown { color: var(--bs-primary); font-size: 2rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
 .courier-order .card-body { padding: 1.1rem; }
+.js-signature-panel { background: var(--surface-soft); }
+.js-signature { display: block; background: #ffffff; border: 2px solid var(--accent) !important; touch-action: none; cursor: crosshair; }
+.js-signature-panel .btn-outline-secondary { color: var(--text); border-color: var(--accent); }
+.js-signature-panel .btn-outline-secondary:hover { color: var(--background); background: var(--accent); border-color: var(--accent); }
 @media (max-width: 575.98px) {
     main.container { width: 100%; max-width: none; }
     body { font-size: .9rem; }
