@@ -15,7 +15,7 @@
 
     const bounds = L.latLngBounds([]);
     const addFlow = (from, to, color, label) => {
-        L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {color, weight: 3, opacity: 0.75, dashArray: '8 7'})
+        L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {color, weight: 3, opacity: 0.78})
             .addTo(map)
             .bindPopup(label);
 
