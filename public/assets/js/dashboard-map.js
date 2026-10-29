@@ -8,9 +8,9 @@
 
     const first = config.orders[0];
     const map = L.map(element).setView([first.pickup.lat, first.pickup.lng], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
+        attribution: 'Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap (CC-BY-SA)',
     }).addTo(map);
 
     const bounds = L.latLngBounds([]);
