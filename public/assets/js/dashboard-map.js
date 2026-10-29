@@ -14,6 +14,24 @@
     }).addTo(map);
 
     const bounds = L.latLngBounds([]);
+    const addFlow = (from, to, color, label) => {
+        L.polyline([[from.lat, from.lng], [to.lat, to.lng]], {color, weight: 3, opacity: 0.75, dashArray: '8 7'})
+            .addTo(map)
+            .bindPopup(label);
+
+        const arrowLat = from.lat + ((to.lat - from.lat) * 0.62);
+        const arrowLng = from.lng + ((to.lng - from.lng) * 0.62);
+        const angle = Math.atan2(to.lat - from.lat, to.lng - from.lng) * 180 / Math.PI;
+        L.marker([arrowLat, arrowLng], {
+            icon: L.divIcon({
+                className: 'map-flow-arrow',
+                html: `<span style="display:block;color:${color};font-size:24px;font-weight:700;line-height:22px;transform:rotate(${angle}deg);text-shadow:0 1px 2px #fff;">➜</span>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+            }),
+            interactive: false,
+        }).addTo(map);
+    };
     const addMarker = (point, color, title, details) => {
         const marker = L.circleMarker([point.lat, point.lng], {radius: 9, color, fillColor: color, fillOpacity: 0.9, weight: 2})
             .addTo(map)
@@ -28,7 +46,9 @@
         addMarker(order.delivery, '#dc3545', 'Ponto de entrega', `${order.delivery.label}<br>${label}`);
         if (order.unit) {
             addMarker(order.unit, '#0d6efd', `Unidade ${order.unit.id}`, `${order.unit.areaName}<br>${label}`);
+            addFlow(order.unit, order.pickup, '#0d6efd', `Unidade ${order.unit.id} → ponto de coleta`);
         }
+        addFlow(order.pickup, order.delivery, '#dc3545', 'Ponto de coleta → ponto de entrega');
     });
 
     if (bounds.isValid()) map.fitBounds(bounds, {padding: [24, 24]});
