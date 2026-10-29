@@ -67,7 +67,15 @@ final class Simulation extends BaseController
             ['address' => 'Avenida dos Autonomistas, 4900 — Osasco/SP', 'lat' => -23.5378, 'lng' => -46.7797],
         ];
 
-        return $this->response->setJSON($locations[array_rand($locations)]);
+        $exclude = trim((string) $this->request->getGet('exclude'));
+        $available = array_values(array_filter($locations, static fn (array $location): bool => $location['address'] !== $exclude));
+        if ($available === []) {
+            $available = $locations;
+        }
+
+        return $this->response
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->setJSON($available[array_rand($available)]);
     }
 
     private function adminEmployee(): ?array

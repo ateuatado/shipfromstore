@@ -26,7 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalLabel = button.textContent;
             button.textContent = 'Sorteando...';
             try {
-                const response = await fetch(endpoint, {headers: {Accept: 'application/json'}});
+                const currentAddress = form.querySelector(`#${type}_address`)?.value ?? '';
+                const url = new URL(endpoint, window.location.origin);
+                url.searchParams.set('exclude', currentAddress);
+                url.searchParams.set('_', String(Date.now()));
+                const response = await fetch(url, {cache: 'no-store', headers: {Accept: 'application/json'}});
                 if (!response.ok) throw new Error('Falha ao sortear endereço');
                 const location = await response.json();
                 form.querySelector(`#${type}_address`).value = location.address;

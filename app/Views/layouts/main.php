@@ -25,6 +25,6 @@
         <?= $this->renderSection('content') ?>
     </main>
     <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
-    <script src="<?= base_url('assets/js/app.js') ?>"></script>
+    <script src="<?= base_url('assets/js/app.js?v=20261029-14') ?>"></script>
 </body>
 </html>
