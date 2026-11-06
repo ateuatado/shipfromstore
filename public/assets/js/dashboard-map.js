@@ -23,9 +23,9 @@
         L.marker([lat, lng], {
             icon: L.divIcon({
                 className: 'map-time-label',
-                html: `<span style="display:block;background:#fff;color:${color};border:2px solid ${color};border-radius:999px;padding:3px 8px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px #0005;">${text}</span>`,
-                iconSize: [1, 1],
-                iconAnchor: [0, 0],
+                html: `<span style="display:flex;width:54px;height:28px;align-items:center;justify-content:center;background:#fff;color:${color};border:2px solid ${color};border-radius:999px;padding:2px 6px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px #0005;">${text}</span>`,
+                iconSize: [54, 28],
+                iconAnchor: [27, 14],
             }),
             interactive: false,
         }).addTo(map);
