@@ -30,19 +30,19 @@
             interactive: false,
         }).addTo(map);
     };
-    const estimateUnitToPickup = async (unit, pickup) => {
-        const key = `${unit.lat},${unit.lng}->${pickup.lat},${pickup.lng}`;
+    const estimateRoute = async (from, to, color) => {
+        const key = `${from.lat},${from.lng}->${to.lat},${to.lng}`;
         if (estimateKeys.has(key) || !config.routeUrl) return;
         estimateKeys.add(key);
         try {
             const response = await fetch(config.routeUrl, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-                body: JSON.stringify({coordinates: [[unit.lng, unit.lat], [pickup.lng, pickup.lat]]}),
+                body: JSON.stringify({coordinates: [[from.lng, from.lat], [to.lng, to.lat]]}),
             });
             const result = await response.json();
             if (!response.ok) return;
-            addTimeLabel(unit, pickup, formatMinutes(result.travelDurationSeconds), '#0d6efd');
+            addTimeLabel(from, to, formatMinutes(result.travelDurationSeconds), color);
         } catch (error) {
             // The line remains visible even when the external route service is unavailable.
         }
@@ -85,9 +85,10 @@
         if (order.unit) {
             addMarker(order.unit, '#0d6efd', `Unidade ${order.unit.id}`, `${order.unit.areaName}<br>${label}`);
             addFlow(order.unit, order.pickup, '#0d6efd', `Unidade ${order.unit.id} → ponto de coleta`);
-            estimateUnitToPickup(order.unit, order.pickup);
+            estimateRoute(order.unit, order.pickup, '#0d6efd');
         }
         addFlow(order.pickup, order.delivery, '#198754', 'Ponto de coleta → ponto de entrega');
+        estimateRoute(order.pickup, order.delivery, '#198754');
     });
 
     if (bounds.isValid()) map.fitBounds(bounds, {padding: [24, 24]});
