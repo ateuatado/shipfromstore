@@ -42,7 +42,7 @@
             });
             const result = await response.json();
             if (!response.ok) return;
-            addTimeLabel(unit, pickup, `Até a coleta: ${formatMinutes(result.travelDurationSeconds)}`, '#0d6efd');
+            addTimeLabel(unit, pickup, formatMinutes(result.travelDurationSeconds), '#0d6efd');
         } catch (error) {
             // The line remains visible even when the external route service is unavailable.
         }
