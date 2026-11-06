@@ -44,7 +44,7 @@ $mapData = array_map(static function (array $order) use ($mapUnitsById): array {
 <?php endforeach ?>
 </div></div>
 <link rel="stylesheet" href="<?= base_url('assets/leaflet/leaflet.css') ?>">
-<script>window.SHIPFROMSTORE_DASHBOARD_MAP = <?= json_encode(['orders' => $mapData], JSON_THROW_ON_ERROR) ?>;</script>
+<script>window.SHIPFROMSTORE_DASHBOARD_MAP = <?= json_encode(['orders' => $mapData, 'routeUrl' => site_url('api/maps/route')], JSON_THROW_ON_ERROR) ?>;</script>
 <script src="<?= base_url('assets/leaflet/leaflet.js') ?>"></script>
-<script src="<?= base_url('assets/js/dashboard-map.js?v=20261029-6') ?>"></script>
+<script src="<?= base_url('assets/js/dashboard-map.js?v=20261106-1') ?>"></script>
 <?= $this->endSection() ?>

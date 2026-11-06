@@ -15,6 +15,38 @@
 
     const bounds = L.latLngBounds([]);
     const flowKeys = new Set();
+    const estimateKeys = new Set();
+    const formatMinutes = (seconds) => `${Math.max(1, Math.round(seconds / 60))} min`;
+    const addTimeLabel = (from, to, text, color) => {
+        const lat = from.lat + ((to.lat - from.lat) * 0.5);
+        const lng = from.lng + ((to.lng - from.lng) * 0.5);
+        L.marker([lat, lng], {
+            icon: L.divIcon({
+                className: 'map-time-label',
+                html: `<span style="display:block;background:#fff;color:${color};border:2px solid ${color};border-radius:999px;padding:3px 8px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px #0005;">${text}</span>`,
+                iconSize: [1, 1],
+                iconAnchor: [0, 0],
+            }),
+            interactive: false,
+        }).addTo(map);
+    };
+    const estimateUnitToPickup = async (unit, pickup) => {
+        const key = `${unit.lat},${unit.lng}->${pickup.lat},${pickup.lng}`;
+        if (estimateKeys.has(key) || !config.routeUrl) return;
+        estimateKeys.add(key);
+        try {
+            const response = await fetch(config.routeUrl, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                body: JSON.stringify({coordinates: [[unit.lng, unit.lat], [pickup.lng, pickup.lat]]}),
+            });
+            const result = await response.json();
+            if (!response.ok) return;
+            addTimeLabel(unit, pickup, `Até a coleta: ${formatMinutes(result.travelDurationSeconds)}`, '#0d6efd');
+        } catch (error) {
+            // The line remains visible even when the external route service is unavailable.
+        }
+    };
     const addFlow = (from, to, color, label) => {
         const key = `${from.lat},${from.lng}->${to.lat},${to.lng}`;
         if (flowKeys.has(key)) return;
@@ -53,6 +85,7 @@
         if (order.unit) {
             addMarker(order.unit, '#0d6efd', `Unidade ${order.unit.id}`, `${order.unit.areaName}<br>${label}`);
             addFlow(order.unit, order.pickup, '#0d6efd', `Unidade ${order.unit.id} → ponto de coleta`);
+            estimateUnitToPickup(order.unit, order.pickup);
         }
         addFlow(order.pickup, order.delivery, '#198754', 'Ponto de coleta → ponto de entrega');
     });
