@@ -18,6 +18,7 @@ $routes->post('dashboard/routes/share/revoke', 'RouteTracking::revokeShare', ['f
 $routes->get('simulator', 'Simulation::index', ['filter' => 'auth']);
 $routes->get('simulator/random-location', 'Simulation::randomLocation', ['filter' => 'auth']);
 $routes->post('simulator', 'Simulation::create', ['filter' => 'auth']);
+$routes->post('simulator/reset', 'Simulation::resetDemo', ['filter' => 'auth']);
 $routes->post('courier/collection/confirm', 'Courier::confirmCollection', ['filter' => 'auth']);
 $routes->post('courier/delivery/confirm', 'Courier::confirmDelivery', ['filter' => 'auth']);
 $routes->post('courier/tracking/point', 'Courier::recordTrackingPoint', ['filter' => 'auth']);

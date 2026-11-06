@@ -78,6 +78,36 @@ final class Simulation extends BaseController
             ->setJSON($available[array_rand($available)]);
     }
 
+    public function resetDemo(): ResponseInterface
+    {
+        if ($this->adminEmployee() === null) {
+            return $this->response->setStatusCode(403)->setBody('Acesso não permitido.');
+        }
+
+        $db = db_connect();
+        $db->transStart();
+        // Keep employees, authentication, roles and configuration intact.
+        foreach (['tracking_share_tokens', 'delivery_tracking_points', 'delivery_assignments', 'orders'] as $table) {
+            $db->table($table)->emptyTable();
+        }
+        $db->transComplete();
+
+        if (! $db->transStatus()) {
+            return redirect()->to(site_url('simulator'))->with('error', 'Não foi possível limpar a demonstração.');
+        }
+
+        $signatureDirectory = WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'signatures';
+        if (is_dir($signatureDirectory)) {
+            foreach (glob($signatureDirectory . DIRECTORY_SEPARATOR . '*.png') ?: [] as $signature) {
+                if (is_file($signature)) {
+                    unlink($signature);
+                }
+            }
+        }
+
+        return redirect()->to(site_url('simulator'))->with('message', 'Demonstração limpa. Usuários, funções e configurações foram preservados.');
+    }
+
     private function adminEmployee(): ?array
     {
         $user = auth()->user();
