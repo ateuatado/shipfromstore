@@ -77,6 +77,10 @@ class AuthGroups extends ShieldAuthGroups
             'title'       => 'Entregador',
             'description' => 'Executa coletas atribuídas pela unidade vinculada.',
         ],
+        'administrador' => [
+            'title'       => 'Administrador do Piloto',
+            'description' => 'Dispara simulações operacionais do piloto.',
+        ],
     ];
 
     /**
@@ -150,6 +154,9 @@ class AuthGroups extends ShieldAuthGroups
             'deliveries.view.assigned',
             'deliveries.confirm.collection',
             'deliveries.confirm.delivery',
+        ],
+        'administrador' => [
+            'admin.access',
         ],
     ];
 }

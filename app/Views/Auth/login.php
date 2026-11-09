@@ -6,7 +6,7 @@
 <div class="container d-flex justify-content-center p-5">
     <div class="card col-12 col-md-5 shadow-sm">
         <div class="card-body">
-            <h1 class="h5 card-title mb-5">Entrar no ShipFromStore</h1>
+            <h1 class="h5 card-title mb-5">Entrar no <?= esc(config('Site')->name) ?></h1>
 
             <?php if (session('error') !== null) : ?>
                 <div class="alert alert-danger" role="alert"><?= esc(session('error')) ?></div>

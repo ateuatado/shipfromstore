@@ -13,10 +13,17 @@ $routes->get('dashboard/assignments', 'Assignments::index', ['filter' => 'auth']
 $routes->post('dashboard/assignments', 'Assignments::assign', ['filter' => 'auth']);
 $routes->get('dashboard/routes', 'RouteTracking::index', ['filter' => 'auth']);
 $routes->get('dashboard/routes/data', 'RouteTracking::data', ['filter' => 'auth']);
+$routes->post('dashboard/routes/share', 'RouteTracking::share', ['filter' => 'auth']);
+$routes->post('dashboard/routes/share/revoke', 'RouteTracking::revokeShare', ['filter' => 'auth']);
+$routes->get('simulator', 'Simulation::index', ['filter' => 'auth']);
+$routes->get('simulator/random-location', 'Simulation::randomLocation', ['filter' => 'auth']);
+$routes->post('simulator', 'Simulation::create', ['filter' => 'auth']);
+$routes->post('simulator/reset', 'Simulation::resetDemo', ['filter' => 'auth']);
 $routes->post('courier/collection/confirm', 'Courier::confirmCollection', ['filter' => 'auth']);
 $routes->post('courier/delivery/confirm', 'Courier::confirmDelivery', ['filter' => 'auth']);
 $routes->post('courier/tracking/point', 'Courier::recordTrackingPoint', ['filter' => 'auth']);
 $routes->get('map', 'Map::index');
+$routes->get('track/(:segment)', 'PublicTracking::show/$1');
 $routes->post('api/maps/route', 'Map::route');
 $routes->get('login', 'Auth\\LoginController::loginView', ['as' => 'login']);
 $routes->post('login', 'Auth\\LoginController::loginAction');

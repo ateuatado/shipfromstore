@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= esc($title ?? 'ShipFromStore') ?></title>
+    <title><?= esc($title ?? config('Site')->name) ?></title>
     <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/app.css?v=20261109-1') ?>">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-semibold" href="<?= site_url('/') ?>">ShipFromStore</a>
+            <a class="navbar-brand fw-semibold" href="<?= site_url('/') ?>"><?= esc(config('Site')->name) ?></a>
             <div class="ms-auto">
+                <?php if (auth()->loggedIn() && auth()->user()->inGroup('administrador')): ?><a class="btn btn-outline-light btn-sm me-2" href="<?= site_url('simulator') ?>">Simulador</a><?php endif ?>
                 <?php if (auth()->loggedIn()): ?>
                     <a class="btn btn-outline-light btn-sm" href="<?= site_url('logout') ?>">Sair</a>
                 <?php else: ?>
@@ -24,6 +25,6 @@
         <?= $this->renderSection('content') ?>
     </main>
     <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
-    <script src="<?= base_url('assets/js/app.js') ?>"></script>
+    <script src="<?= base_url('assets/js/app.js?v=20261029-14') ?>"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ class Map extends BaseController
         $config = config('Map');
 
         return view('pages/map', [
-            'title' => 'Mapa de viabilidade | ShipFromStore',
+            'title' => 'Mapa de viabilidade | ' . config('Site')->name,
             'units' => $config->units,
             'areas' => $config->areas,
             'center' => $config->center,

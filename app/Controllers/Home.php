@@ -2,38 +2,46 @@
 
 namespace App\Controllers;
 
+use App\Services\OrderLifecycle;
+use CodeIgniter\HTTP\ResponseInterface;
+
 class Home extends BaseController
 {
     public function index(): string
     {
-        return view('pages/home', ['title' => 'ShipFromStore']);
+        return view('pages/home', ['title' => config('Site')->name]);
     }
 
-    public function dashboard(): string
+    public function dashboard(): string|ResponseInterface
     {
         return $this->operations('dashboard', 'Pedidos');
     }
 
-    public function pickups(): string
+    public function pickups(): string|ResponseInterface
     {
         return $this->operations('pickups', 'Coletas');
     }
 
-    public function deliveries(): string
+    public function deliveries(): string|ResponseInterface
     {
         return $this->operations('deliveries', 'Pedidos entregues');
     }
 
-    private function operations(string $page, string $title): string
+    private function operations(string $page, string $title): string|ResponseInterface
     {
+        (new OrderLifecycle())->processAcceptanceTimeouts();
         $user = auth()->user();
         $employee = db_connect()->table('employees')
             ->where('user_id', $user->id)
             ->get()->getRowArray();
 
+        if (($employee['role'] ?? null) === 'administrador') {
+            return redirect()->to(site_url('simulator'));
+        }
+
         if (($employee['role'] ?? null) === 'entregador') {
             return view('pages/courier', [
-                'title' => 'Minhas coletas | ShipFromStore',
+                'title' => 'Minhas coletas | ' . config('Site')->name,
                 'employee' => $employee,
                 'orders' => $this->ordersForEmployee($employee, (int) $user->id, ['assigned', 'collected', 'in_transit']),
                 'completedOrders' => $this->ordersForEmployee($employee, (int) $user->id, ['delivered']),
@@ -48,10 +56,19 @@ class Home extends BaseController
             $orders = array_values(array_filter($orders, static fn (array $order): bool => $order['areaId'] === $employee['area_id']));
         }
 
+        // Area and territory views represent one collection, not each unit
+        // offer sent in parallel. Keep the first active offer per collection.
+        $mapOrders = $orders;
+
+        if (($employee['role'] ?? null) !== 'gestor_unidade') {
+            $orders = $this->uniqueCollections($orders);
+        }
+
         return view('pages/' . $page, [
-            'title' => $title . ' | ShipFromStore',
+            'title' => $title . ' | ' . config('Site')->name,
             'employee' => $employee,
             'orders' => $orders,
+            'mapOrders' => $mapOrders,
             'metrics' => $this->metrics($orders),
         ]);
     }
@@ -81,13 +98,17 @@ class Home extends BaseController
     private function ordersForEmployee(?array $employee, int $userId, ?array $statuses = null): array
     {
         $builder = db_connect()->table('orders o')
-            ->select('o.contract, o.customer_name AS customerName, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt');
+            ->select('o.contract, o.collection_id AS collectionId, COALESCE(o.company_name, o.customer_name) AS companyName, COALESCE(o.pickup_contact_name, o.customer_name) AS pickupContactName, COALESCE(o.recipient_name, o.customer_name) AS recipientName, COALESCE(o.company_name, o.customer_name) AS customerName, o.package_height_cm AS packageHeightCm, o.package_width_cm AS packageWidthCm, o.package_depth_cm AS packageDepthCm, o.package_weight_kg AS packageWeightKg, o.unit_id AS unitId, o.area_id AS areaId, o.pickup_address AS pickupAddress, o.delivery_address AS deliveryAddress, o.pickup_lat AS pickupLat, o.pickup_lng AS pickupLng, o.delivery_lat AS deliveryLat, o.delivery_lng AS deliveryLng, o.status, o.received_at AS receivedAt, o.accepted_at AS acceptedAt, o.collected_at AS collectedAt, o.delivered_at AS deliveredAt, o.acceptance_deadline_at AS acceptanceDeadlineAt, o.sla_deadline_at AS slaDeadlineAt, o.partner_forwarded_at AS partnerForwardedAt, o.partner_name AS partnerName, da.id AS assignmentId, da.assigned_at AS assignedAt, da.collection_confirmed_at AS collectionConfirmedAt, da.courier_user_id AS courierUserId, courier.name AS courierName')
+            ->where('o.status !=', 'offer_cancelled');
 
         if (($employee['role'] ?? null) === 'entregador') {
             $builder->join('delivery_assignments da', 'da.contract = o.contract')
                 ->where('da.courier_user_id', $userId)
                 ->where('da.unit_id', $employee['unit_id']);
+        } else {
+            $builder->join('delivery_assignments da', 'da.contract = o.contract', 'left');
         }
+        $builder->join('employees courier', 'courier.user_id = da.courier_user_id', 'left');
 
         if ($statuses !== null) {
             $builder->whereIn('o.status', $statuses);
@@ -100,5 +121,18 @@ class Home extends BaseController
         return $builder->orderBy($statusOrder, '', false)
             ->orderBy('o.received_at', 'DESC')
             ->get()->getResultArray();
+    }
+
+    private function uniqueCollections(array $orders): array
+    {
+        $unique = [];
+        foreach ($orders as $order) {
+            $key = (string) ($order['collectionId'] ?? $order['contract']);
+            if (! isset($unique[$key])) {
+                $unique[$key] = $order;
+            }
+        }
+
+        return array_values($unique);
     }
 }

@@ -6,7 +6,7 @@
 
 ## Objetivo
 
-Disponibilizar ao entregador uma aplicação web responsiva e instalável como PWA, permitindo visualizar as coletas atribuídas, registrar o recebimento do objeto com assinatura na tela e acompanhar o prazo de entrega.
+Disponibilizar ao entregador uma aplicação web responsiva e instalável como PWA, permitindo visualizar as coletas atribuídas, registrar fotograficamente o objeto recebido e acompanhar o prazo de entrega.
 
 ## Regras de atribuição
 
@@ -37,15 +37,15 @@ Como entregador, quero abrir o aplicativo no celular e visualizar minhas coletas
 3. A lista não mostra CPF, CNPJ, RG, telefone, e-mail ou dados de outras coletas.
 4. Ao tocar em uma coleta, o entregador acessa seus detalhes.
 
-## História de usuário 2 — Confirmar recebimento com assinatura (P1)
+## História de usuário 2 — Confirmar recebimento com fotografia (P1)
 
-Como entregador, quero registrar a assinatura do contato no celular quando receber o objeto para estabelecer a cadeia de custódia.
+Como entregador, quero fotografar o objeto no celular quando recebê-lo para estabelecer a cadeia de custódia.
 
 **Critérios de aceite:**
 
-1. A tela apresenta uma área de assinatura sensível ao toque.
-2. O contato pode assinar usando o dedo.
-3. A assinatura é obrigatória para confirmar o recebimento.
+1. A tela apresenta um ícone de câmera destacado e ação para fotografar ou selecionar uma imagem.
+2. A fotografia do objeto é obrigatória para confirmar o recebimento.
+3. A imagem é armazenada com hash de integridade e vinculada à atribuição.
 4. Ao confirmar, o sistema registra entregador, unidade, contrato e data/hora do evento.
 5. A confirmação não permite alterar o horário registrado pelo servidor.
 
@@ -55,7 +55,7 @@ Como entregador, quero ver o tempo restante e a rota de entrega para cumprir o l
 
 **Critérios de aceite:**
 
-1. O contador de 120 minutos começa somente após a confirmação da coleta com assinatura.
+1. O contador de 120 minutos começa somente após a confirmação da coleta com fotografia.
 2. O contador aparece em tamanho grande e permanece visível durante o acompanhamento.
 3. O sistema indica visualmente quando o prazo está próximo do limite.
 4. O entregador consegue visualizar a rota até o destino.
@@ -82,14 +82,16 @@ Casos de não coleta, recusa ou ocorrência serão definidos em uma funcionalida
 
 ## Registro de atribuição
 
-Cada atribuição deve registrar contrato, unidade, entregador, gestor responsável, data/hora da atribuição, confirmação da coleta, confirmação da entrega e a assinatura digital ou seu hash de integridade.
+Cada atribuição deve registrar contrato, unidade, entregador, gestor responsável, data/hora da atribuição, confirmação da coleta, confirmação da entrega e a fotografia do objeto ou seu hash de integridade.
 
 ## Dados exibidos ao entregador
 
 Permitidos:
 
 - número do contrato;
+- nome da empresa;
 - nome do contato no ponto de coleta;
+- nome do destinatário;
 - endereço de coleta;
 - destino necessário para a entrega;
 - status, rota e prazo operacional.

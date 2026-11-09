@@ -26,6 +26,7 @@ final class PilotUsersSeeder extends Seeder
             ['name' => 'Gestor Área Norte', 'matricula' => '0101', 'role' => 'gestor_area', 'unit_id' => null, 'area_id' => 'area-norte'],
             ['name' => 'Gestor Área Sul', 'matricula' => '0102', 'role' => 'gestor_area', 'unit_id' => null, 'area_id' => 'area-sul'],
             ['name' => 'Gerente Território', 'matricula' => '1001', 'role' => 'gerente', 'unit_id' => null, 'area_id' => null],
+            ['name' => 'Administrador do Piloto', 'matricula' => 'admin', 'role' => 'administrador', 'unit_id' => null, 'area_id' => null],
         ];
 
         $unitAreas = [

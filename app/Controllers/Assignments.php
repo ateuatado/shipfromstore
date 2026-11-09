@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Services\OrderLifecycle;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\I18n\Time;
 
@@ -11,6 +12,7 @@ final class Assignments extends BaseController
 {
     public function index(): string|ResponseInterface
     {
+        (new OrderLifecycle())->processAcceptanceTimeouts();
         $context = $this->managerContext();
         if ($context === null) {
             return $this->response->setStatusCode(403)->setBody('Acesso não permitido.');
@@ -29,7 +31,7 @@ final class Assignments extends BaseController
             ->get()->getResultArray();
 
         return view('pages/assignments', [
-            'title' => 'Atribuir coletas | ShipFromStore',
+            'title' => 'Atribuir coletas | ' . config('Site')->name,
             'employee' => $context['employee'],
             'orders' => $orders,
             'couriers' => $couriers,
@@ -55,7 +57,14 @@ final class Assignments extends BaseController
 
         $now = Time::now('UTC')->toDateTimeString();
         $db->transStart();
+        // The first unit to accept wins the collection. All competing offers
+        // for the same collection immediately lose their validity.
         $db->table('orders')->where('id', $order['id'])->update(['status' => 'assigned', 'accepted_at' => $now, 'updated_at' => $now]);
+        $db->table('orders')
+            ->where('collection_id', $order['collection_id'])
+            ->where('id !=', $order['id'])
+            ->where('status', 'pending_acceptance')
+            ->update(['status' => 'offer_cancelled', 'updated_at' => $now]);
         $db->table('delivery_assignments')->insert([
             'contract' => $order['contract'],
             'unit_id' => $order['unit_id'],
