@@ -41,6 +41,12 @@ final class Simulation extends BaseController
             }
         }
 
+        foreach (['company_name', 'pickup_contact_name', 'recipient_name'] as $field) {
+            if (! isset($payload[$field]) || trim((string) $payload[$field]) === '') {
+                return redirect()->back()->with('error', 'Informe empresa, contato da coleta e destinatário.');
+            }
+        }
+
         $result = (new OrderLifecycle())->createSimulation($payload, (int) auth()->user()->id);
         $unitNames = implode(', ', array_column($result['units'], 'id'));
         return redirect()->to(site_url('simulator'))->with('message', sprintf('Uma coleta (%s) foi disparada para as unidades %s. A primeira unidade que aceitar vence; prazo: 15 minutos.', $result['collectionId'], $unitNames));
@@ -96,11 +102,13 @@ final class Simulation extends BaseController
             return redirect()->to(site_url('simulator'))->with('error', 'Não foi possível limpar a demonstração.');
         }
 
-        $signatureDirectory = WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'signatures';
-        if (is_dir($signatureDirectory)) {
-            foreach (glob($signatureDirectory . DIRECTORY_SEPARATOR . '*.png') ?: [] as $signature) {
-                if (is_file($signature)) {
-                    unlink($signature);
+        foreach (['signatures', 'photos'] as $uploadType) {
+            $uploadDirectory = WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . $uploadType;
+            if (is_dir($uploadDirectory)) {
+                foreach (glob($uploadDirectory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) {
+                    if (is_file($file)) {
+                        unlink($file);
+                    }
                 }
             }
         }

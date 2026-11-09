@@ -56,7 +56,10 @@ final class OrderLifecycle
             $db->table('orders')->insert([
                 'contract' => $collectionId . '-U' . str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT),
                 'collection_id' => $collectionId,
-                'customer_name' => (string) ($payload['customer_name'] ?? 'Cliente simulado'),
+                'customer_name' => (string) ($payload['company_name'] ?? 'Cliente simulado'),
+                'company_name' => (string) ($payload['company_name'] ?? 'Empresa simulada'),
+                'pickup_contact_name' => (string) ($payload['pickup_contact_name'] ?? 'Contato da coleta'),
+                'recipient_name' => (string) ($payload['recipient_name'] ?? 'Destinatário simulado'),
                 'unit_id' => $unit['id'],
                 'area_id' => $unit['areaId'],
                 'pickup_address' => (string) $payload['pickup_address'],

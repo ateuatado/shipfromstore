@@ -6,10 +6,8 @@
         if (Number.isNaN(parsed)) return;
         const tick = () => {
             const remaining = Math.max(0, 7200 - Math.floor((Date.now() - parsed) / 1000));
-            const hours = String(Math.floor(remaining / 3600)).padStart(2, '0');
-            const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
-            const seconds = String(remaining % 60).padStart(2, '0');
-            element.textContent = `${hours}:${minutes}:${seconds}`;
+            const minutes = Math.ceil(remaining / 60);
+            element.textContent = `${minutes} min`;
             element.classList.toggle('text-danger', remaining <= 900);
         };
         tick();
@@ -20,45 +18,35 @@
     cards.forEach((card) => {
         const contract = card.dataset.contract;
         const status = card.dataset.status;
-        const signature = card.querySelector('.js-signature');
+        const photoInput = card.querySelector('.js-photo-input');
         const error = card.querySelector('.js-error');
-        let drawing = false;
 
-        if (signature) {
-            const context = signature.getContext('2d');
-            const resize = () => {
-                const ratio = window.devicePixelRatio || 1;
-                const width = signature.clientWidth;
-                signature.width = width * ratio;
-                signature.height = 180 * ratio;
-                context.scale(ratio, ratio);
-                context.lineWidth = 2;
-                context.lineCap = 'round';
-                context.strokeStyle = '#172b4d';
-            };
-            const point = (event) => {
-                const rect = signature.getBoundingClientRect();
-                const source = event.touches ? event.touches[0] : event;
-                return {x: source.clientX - rect.left, y: source.clientY - rect.top};
-            };
-            const start = (event) => { drawing = true; context.beginPath(); const p = point(event); context.moveTo(p.x, p.y); event.preventDefault(); };
-            const move = (event) => { if (!drawing) return; const p = point(event); context.lineTo(p.x, p.y); context.stroke(); event.preventDefault(); };
-            const stop = () => { drawing = false; };
-            ['mousedown', 'touchstart'].forEach((event) => signature.addEventListener(event, start, {passive: false}));
-            ['mousemove', 'touchmove'].forEach((event) => signature.addEventListener(event, move, {passive: false}));
-            ['mouseup', 'mouseleave', 'touchend'].forEach((event) => signature.addEventListener(event, stop));
-            window.addEventListener('resize', resize);
-            resize();
-            card.querySelector('.js-clear-signature').addEventListener('click', () => { context.clearRect(0, 0, signature.width, signature.height); });
+        if (photoInput) {
+            const preview = card.querySelector('.js-photo-preview');
+            const photoName = card.querySelector('.js-photo-name');
+            const confirmButton = card.querySelector('.js-confirm-collection');
+            photoInput.addEventListener('change', () => {
+                const file = photoInput.files?.[0];
+                if (!file) return;
+                photoName.textContent = file.name;
+                confirmButton.disabled = false;
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove('d-none');
+            });
             card.querySelector('.js-confirm-collection').addEventListener('click', async () => {
                 error.textContent = '';
-                const data = signature.toDataURL('image/png');
+                const file = photoInput.files?.[0];
+                if (!file) { error.textContent = 'Selecione uma foto do objeto.'; return; }
+                const formData = new FormData();
+                formData.append('contract', contract);
+                formData.append('photo', file);
+                confirmButton.disabled = true;
                 try {
-                    const response = await fetch(config.collectionUrl, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, body: JSON.stringify({contract, signature: data})});
+                    const response = await fetch(config.collectionUrl, {method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}, body: formData});
                     const result = await response.json();
                     if (!response.ok) throw new Error(result.error || 'Não foi possível confirmar a coleta.');
                     window.location.reload();
-                } catch (exception) { error.textContent = exception.message; }
+                } catch (exception) { error.textContent = exception.message; confirmButton.disabled = false; }
             });
         }
 

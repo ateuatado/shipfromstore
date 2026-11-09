@@ -11,30 +11,40 @@ final class Courier extends BaseController
 {
     public function confirmCollection(): ResponseInterface
     {
-        $payload = $this->request->getJSON(true) ?? [];
+        $payload = $this->request->getPost();
         $contract = (string) ($payload['contract'] ?? '');
-        $signature = (string) ($payload['signature'] ?? '');
+        $photo = $this->request->getFile('photo');
         $assignment = $this->assignment($contract);
 
         if ($assignment === null || $assignment['status'] !== 'assigned') {
             return $this->response->setStatusCode(404)->setJSON(['error' => 'Coleta não está disponível para este entregador.']);
         }
 
-        if (! preg_match('#^data:image/png;base64,#', $signature)) {
-            return $this->response->setStatusCode(422)->setJSON(['error' => 'A assinatura é obrigatória.']);
+        if ($photo === null || ! $photo->isValid() || $photo->hasMoved() || ! str_starts_with((string) $photo->getMimeType(), 'image/')) {
+            return $this->response->setStatusCode(422)->setJSON(['error' => 'A foto do objeto é obrigatória.']);
         }
 
-        $binary = base64_decode(substr($signature, strpos($signature, ',') + 1), true);
-        if ($binary === false || strlen($binary) < 100) {
-            return $this->response->setStatusCode(422)->setJSON(['error' => 'Não foi possível validar a assinatura.']);
+        if ($photo->getSizeByUnit('mb') > 8) {
+            return $this->response->setStatusCode(422)->setJSON(['error' => 'A foto deve ter no máximo 8 MB.']);
         }
 
+        $binary = file_get_contents($photo->getTempName());
+        if ($binary === false) {
+            return $this->response->setStatusCode(422)->setJSON(['error' => 'Não foi possível ler a foto enviada.']);
+        }
         $hash = hash('sha256', $binary);
-        $directory = WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'signatures';
+        $directory = WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'photos';
         if (! is_dir($directory)) {
             mkdir($directory, 0775, true);
         }
-        file_put_contents($directory . DIRECTORY_SEPARATOR . $hash . '.png', $binary);
+        $extension = match ($photo->getMimeType()) {
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/gif' => 'gif',
+            default => 'jpg',
+        };
+        $filename = $hash . '.' . $extension;
+        $photo->move($directory, $filename, true);
 
         $now = Time::now('UTC')->toDateTimeString();
         $slaDeadline = Time::now('UTC')->addMinutes((int) config('Operational')->deliveryWindowMinutes)->toDateTimeString();
@@ -43,8 +53,8 @@ final class Courier extends BaseController
         $db->table('delivery_assignments')->where('id', $assignment['assignment_id'])->update([
             'status' => 'collected',
             'collection_confirmed_at' => $now,
-            'signature_path' => 'uploads/signatures/' . $hash . '.png',
-            'signature_hash' => $hash,
+            'collection_photo_path' => 'uploads/photos/' . $filename,
+            'collection_photo_hash' => $hash,
             'updated_at' => $now,
         ]);
         $db->table('orders')->where('contract', $contract)->update([
