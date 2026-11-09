@@ -19,7 +19,8 @@ final class AddCollectionIdToOrders extends Migration
         // Existing records represented one collection each before concurrent
         // unit offers were introduced. Preserve that meaning during migration.
         $this->db->query('UPDATE orders SET collection_id = contract WHERE collection_id IS NULL');
-        $this->forge->addKey('collection_id', 'orders_collection_id_index');
+        // The column is intentionally enough for the pilot. Do not recreate
+        // an index when a previous partial deployment already created it.
     }
 
     public function down(): void
